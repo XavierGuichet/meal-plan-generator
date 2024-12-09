@@ -69,11 +69,19 @@ class MealRepository() {
             Meal("Sushi", MealTime.DINNER),
         )
 
-
-        println ("Today is $myMeal1.name and the fish eat $myMeal2.name")
-
+    fun getAllMeals(): MutableCollection<Meal> {
+        return meals
     }
 
-    val meals: List<Meal>
-        get() = emptyList<Meal>()
+    fun getLunchMeals(): List<Meal> {
+       var lunchMeals = meals.filter { meal -> meal.mealTime != MealTime.DINNER }
+       lunchMeals = lunchMeals.filter { meal -> (meal.preparationDuration == Duration.QUICK || meal.preparationDuration == Duration.SHORT) }
+        return lunchMeals
+    }
+
+    fun getDinnerMeals(): List<Meal> {
+       val lunchMeals = meals.filter { meal -> meal.mealTime != MealTime.LUNCH }
+
+        return lunchMeals
+    }
 }

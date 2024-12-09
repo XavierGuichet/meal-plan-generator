@@ -16,10 +16,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mealplangenerator.data.model.Meal
+import com.example.mealplangenerator.data.repository.MealRepository
 import com.example.mealplangenerator.ui.theme.MealPlanGeneratorTheme
 import java.time.DayOfWeek
 import java.time.format.TextStyle
@@ -55,6 +57,9 @@ fun MealCard(meal: Meal, modifier: Modifier = Modifier)
 @Composable
 fun WeekMealPlan(modifier: Modifier = Modifier)
 {
+    val mr = MealRepository()
+    val lunchMeals = mr.getLunchMeals()
+    val dinnerMeals = mr.getDinnerMeals()
     val weekDays = setOf(
         DayOfWeek.MONDAY,
         DayOfWeek.TUESDAY,
@@ -64,7 +69,6 @@ fun WeekMealPlan(modifier: Modifier = Modifier)
         DayOfWeek.SATURDAY,
         DayOfWeek.SUNDAY,
     )
-    val myMeal = Meal("Cordon Bleu")
     Card(modifier = modifier)
     {
         for (weekDay in weekDays)
@@ -74,7 +78,8 @@ fun WeekMealPlan(modifier: Modifier = Modifier)
                 Text(
                     text = weekDay.getDisplayName(TextStyle.FULL, Locale.FRANCE),
                     fontSize = 14.sp,
-                    lineHeight = 21.sp
+                    lineHeight = 21.sp,
+                    fontWeight = FontWeight.Bold,
                 )
                 Row {
                     Column(modifier = Modifier,
@@ -84,7 +89,7 @@ fun WeekMealPlan(modifier: Modifier = Modifier)
                             fontSize = 14.sp,
                             lineHeight = 21.sp
                         )
-                        MealCard(myMeal)
+                        MealCard(lunchMeals.random())
                     }
                     Column(modifier = Modifier,
                         horizontalAlignment = Alignment.CenterHorizontally) {
@@ -93,7 +98,7 @@ fun WeekMealPlan(modifier: Modifier = Modifier)
                             fontSize = 14.sp,
                             lineHeight = 21.sp
                         )
-                        MealCard(myMeal)
+                        MealCard(dinnerMeals.random())
                     }
                 }
             }
