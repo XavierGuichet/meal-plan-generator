@@ -2,10 +2,11 @@ package com.example.mealplangenerator.data.repository
 
 import com.example.mealplangenerator.enums.Duration
 import com.example.mealplangenerator.data.model.Meal
+import com.example.mealplangenerator.data.model.MealTimeParams
 import com.example.mealplangenerator.enums.MealTime
 
 class MealRepository() {
-    val meals: MutableCollection<Meal>
+    private val meals: List<Meal>
         get() = mutableListOf<Meal>(
             Meal("Cordon bleu", MealTime.LUNCH, Duration.QUICK),
             Meal("Pavé de saumon", MealTime.LUNCH, Duration.QUICK),
@@ -69,19 +70,13 @@ class MealRepository() {
             Meal("Sushi", MealTime.DINNER),
         )
 
-    fun getAllMeals(): MutableCollection<Meal> {
-        return meals
-    }
+    fun getOneForConfig(lunchMealConfig: MealTimeParams?): Meal {
+        var validMeals = meals
+        if (lunchMealConfig !== null) {
+            validMeals = meals.filter { meal -> (meal.mealTime == lunchMealConfig.mealTime || meal.mealTime == MealTime.ANY) }
+            validMeals = validMeals.filter { meal -> meal.preparationDuration == lunchMealConfig.maxPreparationDuration } // TODO() update to deal with max concept
+        }
 
-    fun getLunchMeals(): List<Meal> {
-       var lunchMeals = meals.filter { meal -> meal.mealTime != MealTime.DINNER }
-       lunchMeals = lunchMeals.filter { meal -> (meal.preparationDuration == Duration.QUICK || meal.preparationDuration == Duration.SHORT) }
-        return lunchMeals
-    }
-
-    fun getDinnerMeals(): List<Meal> {
-       val lunchMeals = meals.filter { meal -> meal.mealTime != MealTime.LUNCH }
-
-        return lunchMeals
+        return validMeals.random()
     }
 }
