@@ -40,21 +40,6 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MealCard(meal: Meal, modifier: Modifier = Modifier)
-{
-    Card(modifier = modifier) {
-        Column {
-            Text(
-                text = meal.name,
-                fontSize = 12.sp,
-                lineHeight = 21.sp,
-                modifier = modifier.padding(6.dp)
-            )
-        }
-    }
-}
-
-@Composable
 fun WeekMealPlan(modifier: Modifier = Modifier)
 {
     val mr = MealRepository()
@@ -73,35 +58,58 @@ fun WeekMealPlan(modifier: Modifier = Modifier)
     {
         for (weekDay in weekDays)
         {
-            Column(modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally) {
+            val lunchMeal = lunchMeals.random()
+            val dinnerMeal = dinnerMeals.random()
+            DayComponent(weekDay, lunchMeal, dinnerMeal)
+        }
+    }
+}
+
+@Composable
+fun DayComponent(day: DayOfWeek, lunchMeal: Meal, dinnerMeal: Meal, modifier: Modifier = Modifier)
+{
+    Column(modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = day.getDisplayName(TextStyle.FULL, Locale.FRANCE),
+            fontSize = 14.sp,
+            lineHeight = 21.sp,
+            fontWeight = FontWeight.Bold,
+        )
+        Row {
+            Column(modifier = Modifier,
+                horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = weekDay.getDisplayName(TextStyle.FULL, Locale.FRANCE),
+                    text = "Midi",
                     fontSize = 14.sp,
-                    lineHeight = 21.sp,
-                    fontWeight = FontWeight.Bold,
+                    lineHeight = 21.sp
                 )
-                Row {
-                    Column(modifier = Modifier,
-                        horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "Midi",
-                            fontSize = 14.sp,
-                            lineHeight = 21.sp
-                        )
-                        MealCard(lunchMeals.random())
-                    }
-                    Column(modifier = Modifier,
-                        horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "Soir",
-                            fontSize = 14.sp,
-                            lineHeight = 21.sp
-                        )
-                        MealCard(dinnerMeals.random())
-                    }
-                }
+                MealCard(lunchMeal)
             }
+            Column(modifier = Modifier,
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "Soir",
+                    fontSize = 14.sp,
+                    lineHeight = 21.sp
+                )
+                MealCard(dinnerMeal)
+            }
+        }
+    }
+}
+
+@Composable
+fun MealCard(meal: Meal, modifier: Modifier = Modifier)
+{
+    Card(modifier = modifier) {
+        Column {
+            Text(
+                text = meal.name,
+                fontSize = 12.sp,
+                lineHeight = 21.sp,
+                modifier = modifier.padding(6.dp)
+            )
         }
     }
 }
