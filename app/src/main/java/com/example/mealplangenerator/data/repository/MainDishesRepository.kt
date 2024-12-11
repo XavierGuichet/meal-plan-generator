@@ -70,13 +70,17 @@ class MainDishesRepository() {
             MainDish("Sushi", MealTime.DINNER, Duration.MEDIUM),
         )
 
-    fun getOneForCriteria(lunchMealConfig: MealCriteria?): MainDish {
+    fun getOneForCriteria(mealCriteria: MealCriteria?): MainDish {
         var validDishes = mainDishes
-        if (lunchMealConfig !== null) {
-            validDishes = mainDishes.filter { meal -> (meal.mealTime == lunchMealConfig.mealTime || meal.mealTime == MealTime.ANY) }
-            validDishes = validDishes.filter { meal -> meal.preparationDuration == lunchMealConfig.maxPreparationDuration } // TODO() update to deal with max concept
-        }
+        if (mealCriteria !== null)
+            validDishes = filterDishesByCriteria(validDishes, mealCriteria)
 
         return validDishes.random()
+    }
+
+    private fun filterDishesByCriteria(validDishes: List<MainDish>, mealCriteria: MealCriteria ): List<MainDish> {
+        var filteredDishes = validDishes.filter { meal -> (meal.mealTime == mealCriteria.mealTime || meal.mealTime == MealTime.ANY) }
+        filteredDishes = filteredDishes.filter { meal -> meal.preparationDuration == mealCriteria.maxPreparationDuration } // TODO() update to deal with max concept
+        return filteredDishes
     }
 }

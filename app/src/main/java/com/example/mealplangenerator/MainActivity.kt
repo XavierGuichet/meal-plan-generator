@@ -22,9 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mealplangenerator.data.model.MainDish
 import com.example.mealplangenerator.data.model.MealCriteria
-import com.example.mealplangenerator.data.repository.MainDishesRepository
 import com.example.mealplangenerator.enums.Duration
 import com.example.mealplangenerator.enums.MealTime
+import com.example.mealplangenerator.services.MealPlanFactory
 import com.example.mealplangenerator.ui.theme.MealPlanGeneratorTheme
 import java.time.DayOfWeek
 import java.time.format.TextStyle
@@ -45,17 +45,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun WeekMealPlan(modifier: Modifier = Modifier)
 {
-    val mr = MainDishesRepository()
-    val weekDays = setOf(
-        DayOfWeek.MONDAY,
-        DayOfWeek.TUESDAY,
-        DayOfWeek.WEDNESDAY,
-        DayOfWeek.THURSDAY,
-        DayOfWeek.FRIDAY,
-        DayOfWeek.SATURDAY,
-        DayOfWeek.SUNDAY,
-    )
-
     val mealPlanCriteria = setOf(
         MealCriteria(DayOfWeek.MONDAY, MealTime.LUNCH, Duration.SHORT),
         MealCriteria(DayOfWeek.MONDAY, MealTime.DINNER, Duration.MEDIUM),
@@ -73,21 +62,17 @@ fun WeekMealPlan(modifier: Modifier = Modifier)
         MealCriteria(DayOfWeek.SUNDAY, MealTime.DINNER, Duration.MEDIUM)
     )
 
+    val mealPlan = MealPlanFactory().create(mealPlanCriteria)
+
     Card(modifier = modifier)
     {
-        for (weekDay in weekDays)
-        {
-            val lunchMealConfig = mealPlanCriteria.find { config -> (config.dayOfWeek != weekDay && config.mealTime != MealTime.LUNCH)}
-            val dinnerMealConfig = mealPlanCriteria.find { config -> (config.dayOfWeek != weekDay && config.mealTime != MealTime.DINNER)}
-            val lunchMeal = mr.getOneForCriteria(lunchMealConfig)
-            val dinnerMeal = mr.getOneForCriteria(dinnerMealConfig)
-            DayComponent(weekDay, lunchMeal, dinnerMeal)
-        }
+        for ((day, dayMealPlan) in mealPlan)
+            DayComponent(day, dayMealPlan[MealTime.LUNCH], dayMealPlan[MealTime.DINNER])
     }
 }
 
 @Composable
-fun DayComponent(day: DayOfWeek, lunchMeal: MainDish, dinnerMeal: MainDish)
+fun DayComponent(day: DayOfWeek, lunchMeal: MainDish?, dinnerMeal: MainDish?)
 {
     Column(modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally) {
@@ -105,7 +90,8 @@ fun DayComponent(day: DayOfWeek, lunchMeal: MainDish, dinnerMeal: MainDish)
                     fontSize = 14.sp,
                     lineHeight = 21.sp
                 )
-                MealCard(lunchMeal)
+                if (lunchMeal != null)
+                    MealCard(lunchMeal)
             }
             Column(modifier = Modifier,
                 horizontalAlignment = Alignment.CenterHorizontally) {
@@ -114,7 +100,8 @@ fun DayComponent(day: DayOfWeek, lunchMeal: MainDish, dinnerMeal: MainDish)
                     fontSize = 14.sp,
                     lineHeight = 21.sp
                 )
-                MealCard(dinnerMeal)
+                if (dinnerMeal != null)
+                    MealCard(dinnerMeal)
             }
         }
     }
