@@ -20,9 +20,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mealplangenerator.data.model.Meal
-import com.example.mealplangenerator.data.model.MealTimeParams
-import com.example.mealplangenerator.data.repository.MealRepository
+import com.example.mealplangenerator.data.model.MainDish
+import com.example.mealplangenerator.data.model.MealCriteria
+import com.example.mealplangenerator.data.repository.MainDishesRepository
 import com.example.mealplangenerator.enums.Duration
 import com.example.mealplangenerator.enums.MealTime
 import com.example.mealplangenerator.ui.theme.MealPlanGeneratorTheme
@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun WeekMealPlan(modifier: Modifier = Modifier)
 {
-    val mr = MealRepository()
+    val mr = MainDishesRepository()
     val weekDays = setOf(
         DayOfWeek.MONDAY,
         DayOfWeek.TUESDAY,
@@ -56,38 +56,38 @@ fun WeekMealPlan(modifier: Modifier = Modifier)
         DayOfWeek.SUNDAY,
     )
 
-    val mealPlanConfigurations = setOf(
-        MealTimeParams(DayOfWeek.MONDAY, MealTime.LUNCH, Duration.SHORT),
-        MealTimeParams(DayOfWeek.MONDAY, MealTime.DINNER, Duration.MEDIUM),
-        MealTimeParams(DayOfWeek.TUESDAY, MealTime.LUNCH, Duration.SHORT),
-        MealTimeParams(DayOfWeek.TUESDAY, MealTime.DINNER, Duration.MEDIUM),
-        MealTimeParams(DayOfWeek.WEDNESDAY, MealTime.LUNCH, Duration.SHORT),
-        MealTimeParams(DayOfWeek.WEDNESDAY, MealTime.DINNER, Duration.MEDIUM),
-        MealTimeParams(DayOfWeek.THURSDAY, MealTime.LUNCH, Duration.SHORT),
-        MealTimeParams(DayOfWeek.THURSDAY, MealTime.DINNER, Duration.MEDIUM),
-        MealTimeParams(DayOfWeek.FRIDAY, MealTime.LUNCH, Duration.SHORT),
-        MealTimeParams(DayOfWeek.FRIDAY, MealTime.DINNER, Duration.MEDIUM),
-        MealTimeParams(DayOfWeek.SATURDAY, MealTime.LUNCH, Duration.SHORT),
-        MealTimeParams(DayOfWeek.SATURDAY, MealTime.DINNER, Duration.MEDIUM),
-        MealTimeParams(DayOfWeek.SUNDAY, MealTime.LUNCH, Duration.SHORT),
-        MealTimeParams(DayOfWeek.SUNDAY, MealTime.DINNER, Duration.MEDIUM),
+    val mealPlanCriteria = setOf(
+        MealCriteria(DayOfWeek.MONDAY, MealTime.LUNCH, Duration.SHORT),
+        MealCriteria(DayOfWeek.MONDAY, MealTime.DINNER, Duration.MEDIUM),
+        MealCriteria(DayOfWeek.TUESDAY, MealTime.LUNCH, Duration.SHORT),
+        MealCriteria(DayOfWeek.TUESDAY, MealTime.DINNER, Duration.MEDIUM),
+        MealCriteria(DayOfWeek.WEDNESDAY, MealTime.LUNCH, Duration.SHORT),
+        MealCriteria(DayOfWeek.WEDNESDAY, MealTime.DINNER, Duration.MEDIUM),
+        MealCriteria(DayOfWeek.THURSDAY, MealTime.LUNCH, Duration.SHORT),
+        MealCriteria(DayOfWeek.THURSDAY, MealTime.DINNER, Duration.MEDIUM),
+        MealCriteria(DayOfWeek.FRIDAY, MealTime.LUNCH, Duration.SHORT),
+        MealCriteria(DayOfWeek.FRIDAY, MealTime.DINNER, Duration.MEDIUM),
+        MealCriteria(DayOfWeek.SATURDAY, MealTime.LUNCH, Duration.SHORT),
+        MealCriteria(DayOfWeek.SATURDAY, MealTime.DINNER, Duration.MEDIUM),
+        MealCriteria(DayOfWeek.SUNDAY, MealTime.LUNCH, Duration.SHORT),
+        MealCriteria(DayOfWeek.SUNDAY, MealTime.DINNER, Duration.MEDIUM)
     )
 
     Card(modifier = modifier)
     {
         for (weekDay in weekDays)
         {
-            val lunchMealConfig = mealPlanConfigurations.find { config -> (config.dayOfWeek != weekDay && config.mealTime != MealTime.LUNCH)}
-            val dinnerMealConfig = mealPlanConfigurations.find { config -> (config.dayOfWeek != weekDay && config.mealTime != MealTime.DINNER)}
-            val lunchMeal = mr.getOneForConfig(lunchMealConfig)
-            val dinnerMeal = mr.getOneForConfig(dinnerMealConfig)
+            val lunchMealConfig = mealPlanCriteria.find { config -> (config.dayOfWeek != weekDay && config.mealTime != MealTime.LUNCH)}
+            val dinnerMealConfig = mealPlanCriteria.find { config -> (config.dayOfWeek != weekDay && config.mealTime != MealTime.DINNER)}
+            val lunchMeal = mr.getOneForCriteria(lunchMealConfig)
+            val dinnerMeal = mr.getOneForCriteria(dinnerMealConfig)
             DayComponent(weekDay, lunchMeal, dinnerMeal)
         }
     }
 }
 
 @Composable
-fun DayComponent(day: DayOfWeek, lunchMeal: Meal, dinnerMeal: Meal)
+fun DayComponent(day: DayOfWeek, lunchMeal: MainDish, dinnerMeal: MainDish)
 {
     Column(modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally) {
@@ -121,7 +121,7 @@ fun DayComponent(day: DayOfWeek, lunchMeal: Meal, dinnerMeal: Meal)
 }
 
 @Composable
-fun MealCard(meal: Meal, modifier: Modifier = Modifier)
+fun MealCard(meal: MainDish, modifier: Modifier = Modifier)
 {
     Card(modifier = modifier) {
         Column {
