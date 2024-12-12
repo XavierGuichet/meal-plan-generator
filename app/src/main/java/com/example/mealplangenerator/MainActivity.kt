@@ -45,6 +45,15 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun WeekMealPlan(modifier: Modifier = Modifier)
 {
+    val weekDays = setOf(
+        DayOfWeek.MONDAY,
+        DayOfWeek.TUESDAY,
+        DayOfWeek.WEDNESDAY,
+        DayOfWeek.THURSDAY,
+        DayOfWeek.FRIDAY,
+        DayOfWeek.SATURDAY,
+        DayOfWeek.SUNDAY,
+    )
     val mealPlanCriteria = setOf(
         MealCriteria(DayOfWeek.MONDAY, MealTime.LUNCH, Duration.SHORT),
         MealCriteria(DayOfWeek.MONDAY, MealTime.DINNER, Duration.MEDIUM),
@@ -62,18 +71,21 @@ fun WeekMealPlan(modifier: Modifier = Modifier)
         MealCriteria(DayOfWeek.SUNDAY, MealTime.DINNER, Duration.MEDIUM)
     )
 
-    val mealPlan = MealPlanFactory().create(mealPlanCriteria)
+    val mealPlan = MealPlanFactory().makePlanForOneWeek(mealPlanCriteria)
 
     Card(modifier = modifier)
     {
-        for ((day, dayMealPlan) in mealPlan)
-            DayComponent(day, dayMealPlan[MealTime.LUNCH], dayMealPlan[MealTime.DINNER])
+        for(day in weekDays)
+            DayComponent(day, mealPlan[day])
     }
 }
 
 @Composable
-fun DayComponent(day: DayOfWeek, lunchMeal: MainDish?, dinnerMeal: MainDish?)
+fun DayComponent(day: DayOfWeek, dayMealPlan: HashMap<MealTime, MainDish?>?)
 {
+    val lunchMeal = dayMealPlan?.get(MealTime.LUNCH)
+    val dinnerMeal = dayMealPlan?.get(MealTime.DINNER)
+
     Column(modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
@@ -114,7 +126,7 @@ fun MealCard(meal: MainDish, modifier: Modifier = Modifier)
         Column {
             Text(
                 text = meal.name,
-                fontSize = 12.sp,
+                fontSize = 14.sp,
                 lineHeight = 21.sp,
                 modifier = modifier.padding(6.dp)
             )

@@ -70,12 +70,12 @@ class MainDishesRepository() {
             MainDish("Sushi", MealTime.DINNER, Duration.MEDIUM),
         )
 
-    fun getOneForCriteria(mealCriteria: MealCriteria?): MainDish {
+    fun getByCriteria(mealCriteria: MealCriteria?): List<MainDish> {
         var validDishes = mainDishes
         if (mealCriteria !== null)
             validDishes = filterDishesByCriteria(validDishes, mealCriteria)
 
-        return validDishes.random()
+        return validDishes
     }
 
     private fun filterDishesByCriteria(validDishes: List<MainDish>, mealCriteria: MealCriteria ): List<MainDish> {

@@ -7,7 +7,7 @@ import com.example.mealplangenerator.enums.MealTime
 import java.time.DayOfWeek
 
 class MealPlanFactory {
-    val weekDays = setOf(
+    private val weekDays = setOf(
         DayOfWeek.MONDAY,
         DayOfWeek.TUESDAY,
         DayOfWeek.WEDNESDAY,
@@ -16,23 +16,54 @@ class MealPlanFactory {
         DayOfWeek.SATURDAY,
         DayOfWeek.SUNDAY,
     )
+    private var mealsInPlan: MutableList<MainDish> = mutableListOf()
+    private val mr = MainDishesRepository()
 
-    fun create(mealPlanCriteria: Set<MealCriteria>): HashMap<DayOfWeek, HashMap<MealTime, MainDish>> {
-        val mr = MainDishesRepository()
-        val mealPlan = HashMap<DayOfWeek, HashMap<MealTime, MainDish>>(7)
-
+    fun makePlanForOneWeek(mealPlanCriteria: Set<MealCriteria>): HashMap<DayOfWeek, HashMap<MealTime, MainDish?>> {
+        val mealPlan = HashMap<DayOfWeek, HashMap<MealTime, MainDish?>>(7)
         for (weekDay in weekDays)
-        {
-            val lunchMealCriteria = mealPlanCriteria.find { config -> (config.dayOfWeek != weekDay && config.mealTime != MealTime.LUNCH)}
-            val dinnerMealCriteria = mealPlanCriteria.find { config -> (config.dayOfWeek != weekDay && config.mealTime != MealTime.DINNER)}
-
-            val dayMealPlan = HashMap<MealTime, MainDish>(2)
-            dayMealPlan[MealTime.LUNCH] = mr.getOneForCriteria(lunchMealCriteria)
-            dayMealPlan[MealTime.DINNER] = mr.getOneForCriteria(dinnerMealCriteria)
-            mealPlan[weekDay] = dayMealPlan
-        }
+            mealPlan[weekDay] = makePlanForOneDay(mealPlanCriteria, weekDay)
 
         return mealPlan
     }
 
+    private fun makePlanForOneDay(mealPlanCriteria: Set<MealCriteria>, weekDay: DayOfWeek): HashMap<MealTime, MainDish?> {
+        val dayMealPlan = HashMap<MealTime, MainDish?>(2)
+
+        var lunchMealCriteria = mealPlanCriteria.find { config -> (config.dayOfWeek != weekDay && config.mealTime != MealTime.LUNCH) }
+        if (lunchMealCriteria == null)
+            lunchMealCriteria = MealCriteria(weekDay, MealTime.LUNCH)
+        val lunchMeal = selectDishWithCriteria(lunchMealCriteria)
+        dayMealPlan[MealTime.LUNCH] = lunchMeal
+        if (lunchMeal != null)
+            mealsInPlan.add(lunchMeal)
+
+        var dinnerMealCriteria = mealPlanCriteria.find { config -> (config.dayOfWeek != weekDay && config.mealTime != MealTime.DINNER) }
+        if (dinnerMealCriteria == null)
+            dinnerMealCriteria = MealCriteria(weekDay, MealTime.DINNER)
+        val dinnerMeal = selectDishWithCriteria(dinnerMealCriteria)
+
+        dayMealPlan[MealTime.DINNER] = dinnerMeal
+        if (dinnerMeal != null)
+            mealsInPlan.add(dinnerMeal)
+
+        return dayMealPlan
+    }
+
+    private fun selectDishWithCriteria(mealCriteria: MealCriteria): MainDish? {
+        val eligibleMeals = mr.getByCriteria(mealCriteria).toMutableList()
+        var selectDish: MainDish? = null
+
+        while (selectDish == null && eligibleMeals.isNotEmpty())
+        {
+            val tmpDish = eligibleMeals.random()
+            eligibleMeals.remove(tmpDish)
+            val isSameDish: (MainDish) -> Boolean = { it.name == tmpDish.name }
+            val alreadyInMealPlan = mealsInPlan.any(isSameDish)
+            if (!alreadyInMealPlan)
+                selectDish = tmpDish
+        }
+
+        return selectDish
+    }
 }
