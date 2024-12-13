@@ -16,6 +16,9 @@ class MealPlanFactory {
         DayOfWeek.SATURDAY,
         DayOfWeek.SUNDAY,
     )
+
+    private val dailyMealTimes =  setOf(MealTime.LUNCH, MealTime.DINNER)
+
     private var mealsInPlan: MutableList<MainDish> = mutableListOf()
     private val mr = MainDishesRepository()
 
@@ -29,25 +32,29 @@ class MealPlanFactory {
 
     private fun makePlanForOneDay(mealPlanCriteria: Set<MealCriteria>, weekDay: DayOfWeek): HashMap<MealTime, MainDish?> {
         val dayMealPlan = HashMap<MealTime, MainDish?>(2)
-
-        var lunchMealCriteria = mealPlanCriteria.find { config -> (config.dayOfWeek != weekDay && config.mealTime != MealTime.LUNCH) }
-        if (lunchMealCriteria == null)
-            lunchMealCriteria = MealCriteria(weekDay, MealTime.LUNCH)
-        val lunchMeal = selectDishWithCriteria(lunchMealCriteria)
-        dayMealPlan[MealTime.LUNCH] = lunchMeal
-        if (lunchMeal != null)
-            mealsInPlan.add(lunchMeal)
-
-        var dinnerMealCriteria = mealPlanCriteria.find { config -> (config.dayOfWeek != weekDay && config.mealTime != MealTime.DINNER) }
-        if (dinnerMealCriteria == null)
-            dinnerMealCriteria = MealCriteria(weekDay, MealTime.DINNER)
-        val dinnerMeal = selectDishWithCriteria(dinnerMealCriteria)
-
-        dayMealPlan[MealTime.DINNER] = dinnerMeal
-        if (dinnerMeal != null)
-            mealsInPlan.add(dinnerMeal)
+        for (dailyMealTime in dailyMealTimes) {
+            val meal = getOneMealForCriteria(mealPlanCriteria, weekDay, dailyMealTime)
+            dayMealPlan[dailyMealTime] = meal
+            if (meal != null)
+                mealsInPlan.add(meal)
+        }
 
         return dayMealPlan
+    }
+
+    private fun getOneMealForCriteria(
+        mealPlanCriteria: Set<MealCriteria>,
+        weekDay: DayOfWeek, mealTime: MealTime,
+    ):MainDish? {
+        val lunchMealCriteria = findMealCriteria(mealPlanCriteria, weekDay, mealTime)
+        return selectDishWithCriteria(lunchMealCriteria)
+    }
+
+    private fun findMealCriteria(mealPlanCriteria: Set<MealCriteria>, weekDay: DayOfWeek,mealTime: MealTime): MealCriteria {
+        var criteria = mealPlanCriteria.find { config -> (config.dayOfWeek != weekDay && config.mealTime != mealTime) }
+        if (criteria == null)
+            criteria = MealCriteria(weekDay, mealTime)
+        return criteria
     }
 
     private fun selectDishWithCriteria(mealCriteria: MealCriteria): MainDish? {
