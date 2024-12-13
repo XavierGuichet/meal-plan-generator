@@ -7,5 +7,6 @@ data class MainDish(
     var name: String,
     var mealTime: MealTime = MealTime.ANY,
     var preparationDuration: Duration = Duration.LONG,
+    var maxOccurenceByWeek: Int = 1,
     var variation: Array<String> = emptyArray<String>()
 )
