@@ -102,8 +102,7 @@ fun DayComponent(day: DayOfWeek, dayMealPlan: HashMap<MealTime, MainDish?>?)
                     fontSize = 14.sp,
                     lineHeight = 21.sp
                 )
-                if (lunchMeal != null)
-                    MealCard(lunchMeal)
+                MealCard(lunchMeal)
             }
             Column(modifier = Modifier,
                 horizontalAlignment = Alignment.CenterHorizontally) {
@@ -112,20 +111,19 @@ fun DayComponent(day: DayOfWeek, dayMealPlan: HashMap<MealTime, MainDish?>?)
                     fontSize = 14.sp,
                     lineHeight = 21.sp
                 )
-                if (dinnerMeal != null)
-                    MealCard(dinnerMeal)
+                MealCard(dinnerMeal)
             }
         }
     }
 }
 
 @Composable
-fun MealCard(meal: MainDish, modifier: Modifier = Modifier)
+fun MealCard(meal: MainDish?, modifier: Modifier = Modifier)
 {
     Card(modifier = modifier) {
         Column {
             Text(
-                text = meal.name,
+                text = meal?.name ?: "---",
                 fontSize = 14.sp,
                 lineHeight = 21.sp,
                 modifier = modifier.padding(6.dp)
