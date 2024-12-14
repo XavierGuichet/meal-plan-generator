@@ -51,7 +51,7 @@ class MealPlanFactory {
     }
 
     private fun findMealCriteria(mealPlanCriteria: Set<MealCriteria>, weekDay: DayOfWeek,mealTime: MealTime): MealCriteria {
-        var criteria = mealPlanCriteria.find { config -> (config.dayOfWeek != weekDay && config.mealTime != mealTime) }
+        var criteria = mealPlanCriteria.find { config -> (config.dayOfWeek == weekDay && config.mealTime == mealTime) }
         if (criteria == null)
             criteria = MealCriteria(weekDay, mealTime)
         return criteria
