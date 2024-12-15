@@ -4,8 +4,9 @@ import com.example.mealplangenerator.enums.Duration
 import com.example.mealplangenerator.data.model.MainDish
 import com.example.mealplangenerator.data.model.MealCriteria
 import com.example.mealplangenerator.enums.MealTime
+import com.example.mealplangenerator.room.AppDatabase
 
-class MainDishesRepository() {
+class MainDishesRepository(db: AppDatabase) {
     private val mainDishes: List<MainDish>
         get() = mutableListOf<MainDish>(
             MainDish("Cordon bleu", MealTime.LUNCH, Duration.QUICK, 2),

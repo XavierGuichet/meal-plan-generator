@@ -1,9 +1,11 @@
 package com.example.mealplangenerator.services
 
+import androidx.room.Room
 import com.example.mealplangenerator.data.model.MainDish
 import com.example.mealplangenerator.data.model.MealCriteria
 import com.example.mealplangenerator.data.repository.MainDishesRepository
 import com.example.mealplangenerator.enums.MealTime
+import com.example.mealplangenerator.room.AppDatabase
 import java.time.DayOfWeek
 
 class MealPlanFactory {
@@ -20,7 +22,10 @@ class MealPlanFactory {
     private val dailyMealTimes =  setOf(MealTime.LUNCH, MealTime.DINNER)
 
     private var mealsInPlan: MutableList<MainDish> = mutableListOf()
-    private val mr = MainDishesRepository()
+    private val mr = MainDishesRepository(db = Room.databaseBuilder(
+        context.applicationContext,
+        AppDatabase::class.java, "database-name"
+    ).build())
 
     fun makePlanForOneWeek(mealPlanCriteria: Set<MealCriteria>): HashMap<DayOfWeek, HashMap<MealTime, MainDish?>> {
         val mealPlan = HashMap<DayOfWeek, HashMap<MealTime, MainDish?>>(7)
