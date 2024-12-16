@@ -120,10 +120,19 @@ fun DayComponent(day: DayOfWeek, dayMealPlan: HashMap<MealTime, MainDish?>?)
 @Composable
 fun MealCard(meal: MainDish?, modifier: Modifier = Modifier)
 {
+    var mealName = "---"
+    if (meal != null)
+    {
+        mealName = meal.name
+        if (meal.variation.isNotEmpty()) {
+            mealName += " " + meal.variation.random()
+        }
+    }
+
     Card(modifier = modifier) {
         Column {
             Text(
-                text = meal?.name ?: "---",
+                text = mealName,
                 fontSize = 14.sp,
                 lineHeight = 21.sp,
                 modifier = modifier.padding(6.dp)
