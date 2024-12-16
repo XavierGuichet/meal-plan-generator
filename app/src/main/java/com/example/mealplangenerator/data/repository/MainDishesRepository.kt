@@ -79,7 +79,7 @@ class MainDishesRepository() {
 
     private fun filterDishesByCriteria(validDishes: List<MainDish>, mealCriteria: MealCriteria ): List<MainDish> {
         var filteredDishes = validDishes.filter { meal -> (meal.mealTime == mealCriteria.mealTime || meal.mealTime == MealTime.ANY) }
-        filteredDishes = filteredDishes.filter { meal -> meal.preparationDuration == mealCriteria.maxPreparationDuration } // TODO() update to deal with max concept
+        filteredDishes = filteredDishes.filter { meal -> meal.preparationDuration <= mealCriteria.maxPreparationDuration }
         return filteredDishes
     }
 }
