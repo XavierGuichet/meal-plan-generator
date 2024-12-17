@@ -66,7 +66,7 @@ class MealPlanFactory {
             val tmpDish = eligibleMeals.random()
             eligibleMeals.remove(tmpDish)
             val isSameDish: (MainDish) -> Boolean = { it.name == tmpDish.name }
-            val tooManyInMealPlan: Boolean = mealsInPlan.count(isSameDish) >= tmpDish.maxOccurenceByWeek
+            val tooManyInMealPlan: Boolean = mealsInPlan.count(isSameDish) >= tmpDish.maxOccurrenceByWeek
             if (!tooManyInMealPlan)
                 selectDish = tmpDish
         }
