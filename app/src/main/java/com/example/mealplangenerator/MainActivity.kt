@@ -33,17 +33,41 @@ import java.util.Locale
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val mealPlanFactory = MealPlanFactory()
+        val mealPlan = generateMealPlan(mealPlanFactory);
+
         enableEdgeToEdge()
         setContent {
             MealPlanGeneratorTheme {
-                MealPlanGeneratorApp()
+                MealPlanGeneratorApp(mealPlan)
             }
         }
+
+
+    }
+    private fun generateMealPlan(mealPlanFactory: MealPlanFactory): HashMap<DayOfWeek, HashMap<MealTime, MainDish?>> {
+        val mealPlanCriteria = setOf(
+            MealCriteria(DayOfWeek.MONDAY, MealTime.LUNCH, Duration.SHORT),
+            MealCriteria(DayOfWeek.MONDAY, MealTime.DINNER, Duration.MEDIUM),
+            MealCriteria(DayOfWeek.TUESDAY, MealTime.LUNCH, Duration.SHORT),
+            MealCriteria(DayOfWeek.TUESDAY, MealTime.DINNER, Duration.MEDIUM),
+            MealCriteria(DayOfWeek.WEDNESDAY, MealTime.LUNCH, Duration.SHORT),
+            MealCriteria(DayOfWeek.WEDNESDAY, MealTime.DINNER, Duration.MEDIUM),
+            MealCriteria(DayOfWeek.THURSDAY, MealTime.LUNCH, Duration.SHORT),
+            MealCriteria(DayOfWeek.THURSDAY, MealTime.DINNER, Duration.MEDIUM),
+            MealCriteria(DayOfWeek.FRIDAY, MealTime.LUNCH, Duration.SHORT),
+            MealCriteria(DayOfWeek.FRIDAY, MealTime.DINNER, Duration.MEDIUM),
+            MealCriteria(DayOfWeek.SATURDAY, MealTime.LUNCH, Duration.SHORT),
+            MealCriteria(DayOfWeek.SATURDAY, MealTime.DINNER, Duration.MEDIUM),
+            MealCriteria(DayOfWeek.SUNDAY, MealTime.LUNCH, Duration.SHORT),
+            MealCriteria(DayOfWeek.SUNDAY, MealTime.DINNER, Duration.MEDIUM)
+        )
+        return mealPlanFactory.makePlanForOneWeek(mealPlanCriteria)
     }
 }
 
 @Composable
-fun WeekMealPlan(modifier: Modifier = Modifier)
+fun WeekMealPlan(mealPlan: HashMap<DayOfWeek, HashMap<MealTime, MainDish?>>,modifier: Modifier = Modifier)
 {
     val weekDays = setOf(
         DayOfWeek.MONDAY,
@@ -54,25 +78,6 @@ fun WeekMealPlan(modifier: Modifier = Modifier)
         DayOfWeek.SATURDAY,
         DayOfWeek.SUNDAY,
     )
-    val mealPlanCriteria = setOf(
-        MealCriteria(DayOfWeek.MONDAY, MealTime.LUNCH, Duration.SHORT),
-        MealCriteria(DayOfWeek.MONDAY, MealTime.DINNER, Duration.MEDIUM),
-        MealCriteria(DayOfWeek.TUESDAY, MealTime.LUNCH, Duration.SHORT),
-        MealCriteria(DayOfWeek.TUESDAY, MealTime.DINNER, Duration.MEDIUM),
-        MealCriteria(DayOfWeek.WEDNESDAY, MealTime.LUNCH, Duration.SHORT),
-        MealCriteria(DayOfWeek.WEDNESDAY, MealTime.DINNER, Duration.MEDIUM),
-        MealCriteria(DayOfWeek.THURSDAY, MealTime.LUNCH, Duration.SHORT),
-        MealCriteria(DayOfWeek.THURSDAY, MealTime.DINNER, Duration.MEDIUM),
-        MealCriteria(DayOfWeek.FRIDAY, MealTime.LUNCH, Duration.SHORT),
-        MealCriteria(DayOfWeek.FRIDAY, MealTime.DINNER, Duration.MEDIUM),
-        MealCriteria(DayOfWeek.SATURDAY, MealTime.LUNCH, Duration.SHORT),
-        MealCriteria(DayOfWeek.SATURDAY, MealTime.DINNER, Duration.MEDIUM),
-        MealCriteria(DayOfWeek.SUNDAY, MealTime.LUNCH, Duration.SHORT),
-        MealCriteria(DayOfWeek.SUNDAY, MealTime.DINNER, Duration.MEDIUM)
-    )
-
-    val mealPlan = MealPlanFactory().makePlanForOneWeek(mealPlanCriteria)
-
     Card(modifier = modifier)
     {
         for(day in weekDays)
@@ -141,12 +146,11 @@ fun MealCard(meal: MainDish?, modifier: Modifier = Modifier)
     }
 }
 
-@Preview
 @Composable
-private fun MealPlanGeneratorApp()
+private fun MealPlanGeneratorApp(mealPlan: HashMap<DayOfWeek, HashMap<MealTime, MainDish?>>)
 {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        WeekMealPlan(
+        WeekMealPlan(mealPlan,
             modifier = Modifier
                 .wrapContentSize(Alignment.Center)
                 .fillMaxSize()
