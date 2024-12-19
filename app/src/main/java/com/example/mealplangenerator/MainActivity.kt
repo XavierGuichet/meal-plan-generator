@@ -17,13 +17,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.room.Room
 import com.example.mealplangenerator.data.model.MainDish
 import com.example.mealplangenerator.data.model.MealCriteria
+import com.example.mealplangenerator.data.repository.MainDishesRepository
 import com.example.mealplangenerator.enums.Duration
 import com.example.mealplangenerator.enums.MealTime
+import com.example.mealplangenerator.room.AppDatabase
 import com.example.mealplangenerator.services.MealPlanFactory
 import com.example.mealplangenerator.ui.theme.MealPlanGeneratorTheme
 import java.time.DayOfWeek
@@ -33,8 +35,10 @@ import java.util.Locale
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val mealPlanFactory = MealPlanFactory()
-        val mealPlan = generateMealPlan(mealPlanFactory);
+        val db = getAppDataBase()
+        val dishesRepository = MainDishesRepository(db)
+        val mealPlanFactory = MealPlanFactory(dishesRepository)
+        val mealPlan = generateMealPlan(mealPlanFactory)
 
         enableEdgeToEdge()
         setContent {
@@ -42,9 +46,8 @@ class MainActivity : ComponentActivity() {
                 MealPlanGeneratorApp(mealPlan)
             }
         }
-
-
     }
+
     private fun generateMealPlan(mealPlanFactory: MealPlanFactory): HashMap<DayOfWeek, HashMap<MealTime, MainDish?>> {
         val mealPlanCriteria = setOf(
             MealCriteria(DayOfWeek.MONDAY, MealTime.LUNCH, Duration.SHORT),
@@ -63,6 +66,11 @@ class MainActivity : ComponentActivity() {
             MealCriteria(DayOfWeek.SUNDAY, MealTime.DINNER, Duration.MEDIUM)
         )
         return mealPlanFactory.makePlanForOneWeek(mealPlanCriteria)
+    }
+
+    private fun getAppDataBase(): AppDatabase {
+        return Room.databaseBuilder(applicationContext,
+            AppDatabase::class.java, "mpg-db").build()
     }
 }
 

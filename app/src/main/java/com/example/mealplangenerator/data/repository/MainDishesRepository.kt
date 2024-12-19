@@ -4,6 +4,7 @@ import com.example.mealplangenerator.enums.Duration
 import com.example.mealplangenerator.data.model.MainDish
 import com.example.mealplangenerator.data.model.MealCriteria
 import com.example.mealplangenerator.enums.MealTime
+import com.example.mealplangenerator.room.AppDatabase
 
 private val mainDishes: List<MainDish>
     get() = mutableListOf<MainDish>(
@@ -67,7 +68,7 @@ private val mainDishes: List<MainDish>
         MainDish("Boeuf bourguignon", MealTime.DINNER, Duration.LONG),
     )
 
-class MainDishesRepository() {
+class MainDishesRepository(db: AppDatabase) {
 
     fun getByCriteria(mealCriteria: MealCriteria?): List<MainDish> {
         var validDishes = mainDishes
