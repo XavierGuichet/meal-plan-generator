@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.room.Room
 import com.example.mealplangenerator.data.model.MainDish
 import com.example.mealplangenerator.data.model.MealCriteria
 import com.example.mealplangenerator.data.repository.MainDishesRepository
@@ -28,6 +27,8 @@ import com.example.mealplangenerator.enums.MealTime
 import com.example.mealplangenerator.room.AppDatabase
 import com.example.mealplangenerator.services.MealPlanFactory
 import com.example.mealplangenerator.ui.theme.MealPlanGeneratorTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import java.time.DayOfWeek
 import java.time.format.TextStyle
 import java.util.Locale
@@ -69,8 +70,11 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun getAppDataBase(): AppDatabase {
-        return Room.databaseBuilder(applicationContext,
-            AppDatabase::class.java, "mpg-db").build()
+        val applicationScope = CoroutineScope(SupervisorJob())
+        return AppDatabase.getDatabase(
+            this,
+            applicationScope
+        )
     }
 }
 
