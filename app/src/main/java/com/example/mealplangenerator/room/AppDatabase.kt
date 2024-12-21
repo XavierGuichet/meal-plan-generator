@@ -44,6 +44,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "mpg_db"
                 ).addCallback(AppDatabaseCallback(scope))
+                .allowMainThreadQueries()
                 .build()
                 INSTANCE = instance
                 // return instance

@@ -68,19 +68,33 @@ private val mainDishes: List<MainDish>
         MainDish("Boeuf bourguignon", MealTime.DINNER, Duration.LONG),
     )
 
-class MainDishesRepository(db: AppDatabase) {
+class MainDishesRepository(private val db: AppDatabase) {
+    private var allDishes = mutableListOf<MainDish>()
+    private var initialized =  false
+
+    private fun initAllDishes()
+    {
+        val dbDishes = db.dishDao()?.getAll()
+        dbDishes?.forEach {
+            val mainDish = MainDish(it.name,it.mealTime,it.duration,it.maxOccurrenceByWeek)
+            allDishes.add(mainDish)
+        }
+    }
 
     fun getByCriteria(mealCriteria: MealCriteria?): List<MainDish> {
-        var validDishes = mainDishes
+        if (!initialized)
+            initAllDishes()
+
+        var validDishes = allDishes
         if (mealCriteria !== null)
             validDishes = filterDishesByCriteria(validDishes, mealCriteria)
 
         return validDishes
     }
 
-    private fun filterDishesByCriteria(validDishes: List<MainDish>, mealCriteria: MealCriteria ): List<MainDish> {
+    private fun filterDishesByCriteria(validDishes: List<MainDish>, mealCriteria: MealCriteria ): MutableList<MainDish> {
         var filteredDishes = validDishes.filter { meal -> (meal.mealTime == mealCriteria.mealTime || meal.mealTime == MealTime.ANY) }
         filteredDishes = filteredDishes.filter { meal -> meal.preparationDuration <= mealCriteria.maxPreparationDuration }
-        return filteredDishes
+        return filteredDishes.toMutableList()
     }
 }
