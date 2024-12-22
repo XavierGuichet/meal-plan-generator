@@ -75,38 +75,44 @@ abstract class AppDatabase : RoomDatabase() {
                             "Steak haché végétaux",
                             MealTime.LUNCH,
                             Duration.QUICK,
-                            1
-                        ), // , arrayOf("Pois chiches", "Lentilles", "Pois Cassés")),
+                            1,
+                            "Pois chiches|Lentilles|Pois Cassés"
+                        ),
                         Dish(
                             "Couscous",
                             MealTime.ANY,
                             Duration.MEDIUM,
-                            1
-                        ), // , arrayOf("Boeuf", "Falafel")),
+                            1,
+                            "Boeuf|Falafel"
+                        ),
                         Dish(
                             "Poulet [du monde]",
                             MealTime.ANY,
                             Duration.MEDIUM,
-                            1
-                        ), // , arrayOf("tikka massala",  "miel et au vinaigre", "tandoori", "saté")),
+                            1,
+                        "tikka massala|miel et au vinaigre|tandoori|saté"
+                        ),
                         Dish(
                             "Pates",
                             MealTime.DINNER,
                             Duration.MEDIUM,
-                            3
-                        ), // , arrayOf("Bolognèse maison", "Bolognèse Végé", "JFK Pasta", "Carbonara", "Aux courgettes")),
+                            3,
+                            "Bolognèse maison|Bolognèse Végé|JFK Pasta|Carbonara|Aux courgettes"
+                        ),
                         Dish(
                             "Pizza",
                             MealTime.DINNER,
                             Duration.MEDIUM,
-                            1
-                        ), // , arrayOf("Chorizo", "Royale", "Bacon", "Tartiflette")),
+                            1,
+                        "Chorizo|Royale|Bacon|Tartiflette"
+                        ),
                         Dish(
                             "Risotto",
                             MealTime.DINNER,
                             Duration.MEDIUM,
-                            1
-                        ), // , arrayOf("aux champignons", "aux légumes", "au chorizo")),
+                            1,
+                            "aux champignons|aux légumes|au chorizo")
+                        ,
                     )
                 }
             }

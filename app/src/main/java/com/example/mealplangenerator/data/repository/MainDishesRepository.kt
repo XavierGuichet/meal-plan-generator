@@ -13,7 +13,7 @@ class MainDishesRepository(private val db: AppDatabase) {
     {
         val dbDishes = db.dishDao()?.getAll()
         dbDishes?.forEach {
-            val mainDish = MainDish(it.name,it.mealTime,it.duration,it.maxOccurrenceByWeek)
+            val mainDish = MainDish(it.name,it.mealTime,it.duration,it.maxOccurrenceByWeek, it.variations.split('|'))
             allDishes.add(mainDish)
         }
     }

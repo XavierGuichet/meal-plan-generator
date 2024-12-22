@@ -12,6 +12,7 @@ class Dish(
     @ColumnInfo(name = "meal_time") val mealTime: MealTime,
     @ColumnInfo(name = "duration") val duration: Duration,
     @ColumnInfo(name = "max_occurrence") val maxOccurrenceByWeek: Int = 1,
+    @ColumnInfo(name = "variations") val variations: String = ""
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
