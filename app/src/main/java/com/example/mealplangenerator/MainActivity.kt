@@ -90,11 +90,18 @@ fun WeekMealPlan(mealPlan: HashMap<DayOfWeek, HashMap<MealTime, MainDish?>>,modi
         DayOfWeek.SATURDAY,
         DayOfWeek.SUNDAY,
     )
-    Card(modifier = modifier)
-    {
-        for(day in weekDays)
-            DayComponent(day, mealPlan[day])
+    Column (modifier = modifier) {
+        Card(modifier = Modifier.fillMaxHeight(0.8f))
+        {
+            for (day in weekDays)
+                DayComponent(day, mealPlan[day])
+        }
+
+        Button(onClick = {/*TODO*/}) {
+            Text(stringResource(R.string.regenerate_plan))
+        }
     }
+
 }
 
 @Composable
@@ -158,6 +165,7 @@ fun MealCard(meal: MainDish?, modifier: Modifier = Modifier)
     }
 }
 
+@Preview
 @Composable
 private fun MealPlanGeneratorApp(mealPlan: HashMap<DayOfWeek, HashMap<MealTime, MainDish?>>)
 {
