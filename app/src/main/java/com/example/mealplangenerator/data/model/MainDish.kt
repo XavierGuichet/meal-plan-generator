@@ -8,5 +8,6 @@ data class MainDish(
     var mealTime: MealTime = MealTime.ANY,
     var preparationDuration: Duration = Duration.LONG,
     var maxOccurrenceByWeek: Int = 1,
-    var variation: List<String> = emptyList<String>()
+    var variation: List<String> = emptyList<String>(),
+    var isStaple: Boolean = false
 )

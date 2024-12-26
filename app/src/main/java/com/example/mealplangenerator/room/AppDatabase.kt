@@ -27,8 +27,8 @@ abstract class AppDatabase : RoomDatabase() {
                     dishDao.deleteAll()
 
                     dishDao.insertAll(
-                        Dish("Cordon bleu", MealTime.LUNCH, Duration.QUICK, 2),
-                        Dish("Pavé de saumon", MealTime.LUNCH, Duration.QUICK),
+                        Dish("Cordon bleu", MealTime.LUNCH, Duration.QUICK, 2, "", true),
+                        Dish("Pavé de saumon", MealTime.LUNCH, Duration.QUICK, 2, "", true),
                         Dish("Cotes de porc citron", MealTime.LUNCH, Duration.SHORT),
                         Dish("Salade Caesar", MealTime.ANY, Duration.SHORT),
                         Dish("Dinde cacahuète / petit légumes", MealTime.ANY, Duration.MEDIUM),
@@ -104,7 +104,8 @@ abstract class AppDatabase : RoomDatabase() {
                             MealTime.DINNER,
                             Duration.MEDIUM,
                             1,
-                        "Chorizo|Royale|Bacon|Tartiflette"
+                        "Chorizo|Royale|Bacon|Tartiflette",
+                            true
                         ),
                         Dish(
                             "Risotto",
