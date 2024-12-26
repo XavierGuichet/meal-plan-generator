@@ -2,8 +2,8 @@ package com.example.mealplangenerator.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.example.mealplangenerator.data.model.MainDish
 import com.example.mealplangenerator.data.model.MealCriteria
+import com.example.mealplangenerator.data.model.WeeklyMealPlan
 import com.example.mealplangenerator.data.repository.MainDishesRepository
 import com.example.mealplangenerator.enums.Duration
 import com.example.mealplangenerator.enums.MealTime
@@ -21,7 +21,7 @@ class MealPlanViewModel(application: Application) : AndroidViewModel(application
     private val _uiState = MutableStateFlow(MealPlanUiState())
     val uiState: StateFlow<MealPlanUiState> = _uiState.asStateFlow()
 
-    private lateinit var currentMealPlan: HashMap<DayOfWeek, HashMap<MealTime, MainDish?>>
+    private lateinit var currentWeeklyMealPlan: WeeklyMealPlan
 
     private fun getAppDataBase(): AppDatabase {
         val applicationScope = CoroutineScope(SupervisorJob())
@@ -32,10 +32,7 @@ class MealPlanViewModel(application: Application) : AndroidViewModel(application
         )
     }
 
-    fun generateMealPlan(): HashMap<DayOfWeek, HashMap<MealTime, MainDish?>> {
-        print("generateMealPlan")
-
-        println("generateMealPlan")
+    fun generateMealPlan(): WeeklyMealPlan {
         val mealPlanCriteria = setOf(
             MealCriteria(DayOfWeek.MONDAY, MealTime.LUNCH, Duration.SHORT),
             MealCriteria(DayOfWeek.MONDAY, MealTime.DINNER, Duration.MEDIUM),
@@ -55,15 +52,15 @@ class MealPlanViewModel(application: Application) : AndroidViewModel(application
         val db = getAppDataBase()
         val dishesRepository = MainDishesRepository(db)
         val mealPlanFactory = MealPlanFactory(dishesRepository)
-        currentMealPlan = mealPlanFactory.makePlanForOneWeek(mealPlanCriteria)
+        currentWeeklyMealPlan = mealPlanFactory.makePlanForOneWeek(mealPlanCriteria)
 
         updateMealPlan()
-        return currentMealPlan
+        return currentWeeklyMealPlan
     }
 
     private fun updateMealPlan() {
         _uiState.update {
-            currentState -> currentState.copy(mealPlan = currentMealPlan)
+            currentState -> currentState.copy(weeklyMealPlan = currentWeeklyMealPlan)
         }
     }
 }

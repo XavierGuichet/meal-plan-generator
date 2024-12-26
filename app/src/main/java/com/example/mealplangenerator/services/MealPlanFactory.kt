@@ -2,6 +2,7 @@ package com.example.mealplangenerator.services
 
 import com.example.mealplangenerator.data.model.MainDish
 import com.example.mealplangenerator.data.model.MealCriteria
+import com.example.mealplangenerator.data.model.WeeklyMealPlan
 import com.example.mealplangenerator.data.repository.MainDishesRepository
 import com.example.mealplangenerator.enums.MealTime
 import java.time.DayOfWeek
@@ -11,12 +12,13 @@ class MealPlanFactory(private val mr: MainDishesRepository) {
 
     private var mealsInPlan: MutableList<MainDish> = mutableListOf()
 
-    fun makePlanForOneWeek(mealPlanCriteria: Set<MealCriteria>): HashMap<DayOfWeek, HashMap<MealTime, MainDish?>> {
-        val mealPlan = HashMap<DayOfWeek, HashMap<MealTime, MainDish?>>(7)
-        for (weekDay in enumValues<DayOfWeek>())
-            mealPlan[weekDay] = makePlanForOneDay(mealPlanCriteria, weekDay)
+    fun makePlanForOneWeek(mealPlanCriteria: Set<MealCriteria>): WeeklyMealPlan {
+        val weeklyMealPlan = WeeklyMealPlan()
+        weeklyMealPlan.mealPlan.entries.forEach { it ->
+            weeklyMealPlan.mealPlan[it.key] = makePlanForOneDay(mealPlanCriteria, it.key)
+        }
 
-        return mealPlan
+        return weeklyMealPlan
     }
 
     private fun makePlanForOneDay(mealPlanCriteria: Set<MealCriteria>, weekDay: DayOfWeek): HashMap<MealTime, MainDish?> {

@@ -47,15 +47,16 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun WeekMealPlan(mealPlanViewModel: MealPlanViewModel = viewModel(), modifier: Modifier = Modifier)
+fun WeekMealPlan(modifier: Modifier = Modifier, mealPlanViewModel: MealPlanViewModel = viewModel())
 {
     val mealPlanUiState by mealPlanViewModel.uiState.collectAsState()
-    val mealPlan = mealPlanUiState.mealPlan
+    val mealPlan = mealPlanUiState.weeklyMealPlan.mealPlan
     Column (modifier = modifier) {
         Card(modifier = Modifier.fillMaxHeight(0.8f))
         {
-            for (day in enumValues<DayOfWeek>())
-                DayComponent(day, mealPlan[day])
+            mealPlan.entries.forEach {
+                DayComponent(it.key, it.value)
+            }
         }
 
         Button(onClick = {mealPlanViewModel.generateMealPlan() }) {
