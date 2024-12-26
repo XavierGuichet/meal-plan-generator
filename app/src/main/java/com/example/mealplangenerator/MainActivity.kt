@@ -51,19 +51,10 @@ fun WeekMealPlan(mealPlanViewModel: MealPlanViewModel = viewModel(), modifier: M
 {
     val mealPlanUiState by mealPlanViewModel.uiState.collectAsState()
     val mealPlan = mealPlanUiState.mealPlan
-    val weekDays = setOf(
-        DayOfWeek.MONDAY,
-        DayOfWeek.TUESDAY,
-        DayOfWeek.WEDNESDAY,
-        DayOfWeek.THURSDAY,
-        DayOfWeek.FRIDAY,
-        DayOfWeek.SATURDAY,
-        DayOfWeek.SUNDAY,
-    )
     Column (modifier = modifier) {
         Card(modifier = Modifier.fillMaxHeight(0.8f))
         {
-            for (day in weekDays)
+            for (day in enumValues<DayOfWeek>())
                 DayComponent(day, mealPlan[day])
         }
 

@@ -7,23 +7,13 @@ import com.example.mealplangenerator.enums.MealTime
 import java.time.DayOfWeek
 
 class MealPlanFactory(private val mr: MainDishesRepository) {
-    private val weekDays = setOf(
-        DayOfWeek.MONDAY,
-        DayOfWeek.TUESDAY,
-        DayOfWeek.WEDNESDAY,
-        DayOfWeek.THURSDAY,
-        DayOfWeek.FRIDAY,
-        DayOfWeek.SATURDAY,
-        DayOfWeek.SUNDAY,
-    )
-
     private val dailyMealTimes =  setOf(MealTime.LUNCH, MealTime.DINNER)
 
     private var mealsInPlan: MutableList<MainDish> = mutableListOf()
 
     fun makePlanForOneWeek(mealPlanCriteria: Set<MealCriteria>): HashMap<DayOfWeek, HashMap<MealTime, MainDish?>> {
         val mealPlan = HashMap<DayOfWeek, HashMap<MealTime, MainDish?>>(7)
-        for (weekDay in weekDays)
+        for (weekDay in enumValues<DayOfWeek>())
             mealPlan[weekDay] = makePlanForOneDay(mealPlanCriteria, weekDay)
 
         return mealPlan
