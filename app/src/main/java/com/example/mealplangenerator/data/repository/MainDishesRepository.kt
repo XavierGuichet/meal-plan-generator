@@ -16,6 +16,7 @@ class MainDishesRepository(private val db: AppDatabase) {
             val mainDish = MainDish(it.name,it.mealTime,it.duration,it.maxOccurrenceByWeek, it.variations.split('|'), it.isStaple)
             allDishes.add(mainDish)
         }
+        initialized = true
     }
 
     fun getByCriteria(mealCriteria: MealCriteria?): List<MainDish> {
