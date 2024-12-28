@@ -31,8 +31,14 @@ class MainDishesRepository(private val db: AppDatabase) {
     }
 
     private fun filterDishesByCriteria(validDishes: List<MainDish>, mealCriteria: MealCriteria ): MutableList<MainDish> {
-        var filteredDishes = validDishes.filter { meal -> (meal.mealTime == mealCriteria.mealTime || meal.mealTime == MealTime.ANY) }
+        var filteredDishes =validDishes
+        if (mealCriteria.mealTime !== MealTime.ANY)
+            filteredDishes = filteredDishes.filter { meal -> (meal.mealTime == mealCriteria.mealTime || meal.mealTime == MealTime.ANY) }
+
         filteredDishes = filteredDishes.filter { meal -> meal.preparationDuration <= mealCriteria.maxPreparationDuration }
+
+        filteredDishes = filteredDishes.filter { meal -> meal.isStaple == mealCriteria.isStaple }
+
         return filteredDishes.toMutableList()
     }
 }
