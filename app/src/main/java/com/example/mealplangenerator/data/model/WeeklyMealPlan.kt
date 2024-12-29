@@ -11,4 +11,9 @@ class WeeklyMealPlan() {
             mealPlan[weekDay] = HashMap<MealTime, MainDish?>(2)
         }
     }
+
+    fun addMealToSlot(meal: MainDish, dayOfWeek: DayOfWeek, mealTime: MealTime)
+    {
+        mealPlan[dayOfWeek]?.set(mealTime, meal)
+    }
 }

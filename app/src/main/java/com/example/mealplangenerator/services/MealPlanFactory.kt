@@ -4,6 +4,7 @@ import com.example.mealplangenerator.data.model.MainDish
 import com.example.mealplangenerator.data.model.MealCriteria
 import com.example.mealplangenerator.data.model.WeeklyMealPlan
 import com.example.mealplangenerator.data.repository.MainDishesRepository
+import com.example.mealplangenerator.enums.Duration
 import com.example.mealplangenerator.enums.MealTime
 import java.time.DayOfWeek
 
@@ -13,12 +14,42 @@ class MealPlanFactory(private val mr: MainDishesRepository) {
     private var mealsInPlan: MutableList<MainDish> = mutableListOf()
 
     fun makePlanForOneWeek(mealPlanCriteria: Set<MealCriteria>): WeeklyMealPlan {
-        val weeklyMealPlan = WeeklyMealPlan()
+        var weeklyMealPlan = WeeklyMealPlan()
+        weeklyMealPlan = addStapleMealsToPlan(weeklyMealPlan, mealPlanCriteria)
+
+        overridePlanWithDailyPlan(weeklyMealPlan, mealPlanCriteria)
+
+        return weeklyMealPlan
+    }
+
+    private fun addStapleMealsToPlan(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: Set<MealCriteria>): WeeklyMealPlan {
+        val stapleCriterion = MealCriteria(DayOfWeek.SUNDAY, MealTime.ANY, Duration.QUICK, true)
+        val stapleMeals = mr.getByCriteria(stapleCriterion).toMutableList()
+
+        data class Slot(val dayOfWeek: DayOfWeek, val mealTime: MealTime)
+        var availableSlot: MutableList<Slot>
+
+        stapleMeals.forEach {
+            availableSlot = mutableListOf<Slot>()
+
+            mealPlanCriteria.forEach { mpc ->
+                if (it.mealTime == mpc.mealTime && it.preparationDuration <= mpc.maxPreparationDuration) {
+                    val slot = Slot(mpc.dayOfWeek, mpc.mealTime)
+                    availableSlot.add(slot)
+                }
+            }
+
+            val winningSlot = availableSlot.random()
+            weeklyMealPlan.addMealToSlot(it, winningSlot.dayOfWeek, winningSlot.mealTime)
+
+        }
+        return weeklyMealPlan;
+    }
+
+    private fun overridePlanWithDailyPlan(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: Set<MealCriteria>) {
         weeklyMealPlan.mealPlan.entries.forEach { it ->
             weeklyMealPlan.mealPlan[it.key] = makePlanForOneDay(mealPlanCriteria, it.key)
         }
-
-        return weeklyMealPlan
     }
 
     private fun makePlanForOneDay(mealPlanCriteria: Set<MealCriteria>, weekDay: DayOfWeek): HashMap<MealTime, MainDish?> {
