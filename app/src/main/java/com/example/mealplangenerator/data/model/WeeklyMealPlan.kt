@@ -16,4 +16,8 @@ class WeeklyMealPlan() {
     {
         mealPlan[dayOfWeek]?.set(mealTime, meal)
     }
+
+    fun getMealAtSlot(dayOfWeek: DayOfWeek, mealTime: MealTime): MainDish? {
+        return mealPlan[dayOfWeek]?.get(mealTime)
+    }
 }

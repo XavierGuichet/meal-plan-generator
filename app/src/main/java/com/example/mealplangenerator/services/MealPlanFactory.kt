@@ -17,7 +17,7 @@ class MealPlanFactory(private val mr: MainDishesRepository) {
         var weeklyMealPlan = WeeklyMealPlan()
         weeklyMealPlan = addStapleMealsToPlan(weeklyMealPlan, mealPlanCriteria)
 
-        overridePlanWithDailyPlan(weeklyMealPlan, mealPlanCriteria)
+        weeklyMealPlan = fillPlanWithMeals(weeklyMealPlan, mealPlanCriteria)
 
         return weeklyMealPlan
     }
@@ -46,22 +46,20 @@ class MealPlanFactory(private val mr: MainDishesRepository) {
         return weeklyMealPlan;
     }
 
-    private fun overridePlanWithDailyPlan(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: Set<MealCriteria>) {
-        weeklyMealPlan.mealPlan.entries.forEach { it ->
-            weeklyMealPlan.mealPlan[it.key] = makePlanForOneDay(mealPlanCriteria, it.key)
-        }
-    }
-
-    private fun makePlanForOneDay(mealPlanCriteria: Set<MealCriteria>, weekDay: DayOfWeek): HashMap<MealTime, MainDish?> {
-        val dayMealPlan = HashMap<MealTime, MainDish?>(2)
-        for (dailyMealTime in dailyMealTimes) {
-            val meal = getOneMealForCriteria(mealPlanCriteria, weekDay, dailyMealTime)
-            dayMealPlan[dailyMealTime] = meal
-            if (meal != null)
-                mealsInPlan.add(meal)
+    private fun fillPlanWithMeals(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: Set<MealCriteria>): WeeklyMealPlan {
+        weeklyMealPlan.mealPlan.entries.forEach { wmp ->
+            for (dailyMealTime in dailyMealTimes) {
+                if (weeklyMealPlan.getMealAtSlot(wmp.key, dailyMealTime) != null)
+                    continue
+                val meal = getOneMealForCriteria(mealPlanCriteria, wmp.key, dailyMealTime)
+                if (meal != null) {
+                    weeklyMealPlan.addMealToSlot(meal, wmp.key, dailyMealTime)
+                    mealsInPlan.add(meal)
+                }
+            }
         }
 
-        return dayMealPlan
+        return weeklyMealPlan
     }
 
     private fun getOneMealForCriteria(
