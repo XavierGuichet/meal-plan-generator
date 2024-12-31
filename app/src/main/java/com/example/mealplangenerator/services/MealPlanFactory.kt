@@ -2,6 +2,7 @@ package com.example.mealplangenerator.services
 
 import com.example.mealplangenerator.data.model.MainDish
 import com.example.mealplangenerator.data.model.MealCriteria
+import com.example.mealplangenerator.data.model.MealSlot
 import com.example.mealplangenerator.data.model.WeeklyMealPlan
 import com.example.mealplangenerator.data.repository.MainDishesRepository
 import com.example.mealplangenerator.enums.Duration
@@ -10,7 +11,6 @@ import java.time.DayOfWeek
 
 class MealPlanFactory(private val mr: MainDishesRepository) {
     private val dailyMealTimes =  setOf(MealTime.LUNCH, MealTime.DINNER)
-
     private var mealsInPlan: MutableList<MainDish> = mutableListOf()
 
     fun makePlanForOneWeek(mealPlanCriteria: Set<MealCriteria>): WeeklyMealPlan {
@@ -25,16 +25,14 @@ class MealPlanFactory(private val mr: MainDishesRepository) {
     private fun addStapleMealsToPlan(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: Set<MealCriteria>): WeeklyMealPlan {
         val stapleCriterion = MealCriteria(DayOfWeek.SUNDAY, MealTime.ANY, Duration.QUICK, true)
         val stapleMeals = mr.getByCriteria(stapleCriterion).toMutableList()
-
-        data class Slot(val dayOfWeek: DayOfWeek, val mealTime: MealTime)
-        var availableSlot: MutableList<Slot>
+        var availableSlot: MutableList<MealSlot>
 
         stapleMeals.forEach {
-            availableSlot = mutableListOf<Slot>()
+            availableSlot = mutableListOf<MealSlot>()
 
             mealPlanCriteria.forEach { mpc ->
                 if (it.mealTime == mpc.mealTime && it.preparationDuration <= mpc.maxPreparationDuration) {
-                    val slot = Slot(mpc.dayOfWeek, mpc.mealTime)
+                    val slot = MealSlot(mpc.dayOfWeek, mpc.mealTime)
                     availableSlot.add(slot)
                 }
             }
