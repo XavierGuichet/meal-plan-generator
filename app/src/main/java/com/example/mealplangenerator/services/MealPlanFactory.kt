@@ -29,25 +29,32 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
     }
 
     private fun addStapleMealsToPlan(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: Set<MealCriteria>): WeeklyMealPlan {
-        val stapleCriterion = MealCriteria(DayOfWeek.SUNDAY, MealTime.ANY, Duration.QUICK, true)
-        val stapleMeals = mr.getByCriteria(stapleCriterion).toMutableList()
-        var availableSlot: MutableList<MealSlot>
-
+        val stapleMeals = getStapleMeals()
+        // FIXME : a stapleMeal can override another stapleMeal
         stapleMeals.forEach {
-            availableSlot = mutableListOf<MealSlot>()
-
-            mealPlanCriteria.forEach { mpc ->
-                if (it.mealTime == mpc.mealTime && it.preparationDuration <= mpc.maxPreparationDuration) {
-                    val slot = MealSlot(mpc.dayOfWeek, mpc.mealTime)
-                    availableSlot.add(slot)
-                }
-            }
-
-            val winningSlot = availableSlot.random()
+            val winningSlot = getRandomAvailableSlot(mealPlanCriteria, it)
             weeklyMealPlan.addMealToSlot(it, winningSlot.dayOfWeek, winningSlot.mealTime)
-
         }
-        return weeklyMealPlan;
+        return weeklyMealPlan
+    }
+
+    private fun getStapleMeals(): List<MainDish> {
+        val stapleCriterion = MealCriteria(DayOfWeek.SUNDAY, MealTime.ANY, Duration.QUICK, true)
+        return mr.getByCriteria(stapleCriterion)
+    }
+
+    private fun getRandomAvailableSlot(mealPlanCriteria: Set<MealCriteria>,it: MainDish): MealSlot {
+        val availableSlot = getAvailableMealSlots(mealPlanCriteria, it.mealTime, it.preparationDuration)
+        return availableSlot.random()
+    }
+
+    private fun getAvailableMealSlots(mealPlanCriteria: Set<MealCriteria>, mealTime: MealTime, duration: Duration): List<MealSlot> {
+        val availableMpc = mealPlanCriteria.filter { mpc -> mealTime == mpc.mealTime && duration <= mpc.maxPreparationDuration }
+        val availableSlot: List<MealSlot> = availableMpc.map { mpc ->
+            MealSlot(mpc.dayOfWeek, mpc.mealTime)
+        }
+
+        return availableSlot
     }
 
     private fun fillPlanWithMeals(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: Set<MealCriteria>): WeeklyMealPlan {
