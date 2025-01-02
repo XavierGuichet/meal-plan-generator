@@ -5,7 +5,7 @@ import com.example.mealplangenerator.data.model.MealCriteria
 import com.example.mealplangenerator.enums.MealTime
 import com.example.mealplangenerator.room.AppDatabase
 
-class MainDishesRepository(private val db: AppDatabase) {
+open class MainDishesRepository(private val db: AppDatabase): MainDishesRepositoryInterface {
     private var allDishes = mutableListOf<MainDish>()
     private var initialized =  false
 
@@ -19,7 +19,7 @@ class MainDishesRepository(private val db: AppDatabase) {
         initialized = true
     }
 
-    fun getByCriteria(mealCriteria: MealCriteria?): List<MainDish> {
+    override fun getByCriteria(mealCriteria: MealCriteria?): List<MainDish> {
         if (!initialized)
             initAllDishes()
 

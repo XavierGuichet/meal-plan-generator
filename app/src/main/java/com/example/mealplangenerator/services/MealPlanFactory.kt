@@ -2,16 +2,22 @@ package com.example.mealplangenerator.services
 
 import com.example.mealplangenerator.data.model.MainDish
 import com.example.mealplangenerator.data.model.MealCriteria
+import com.example.mealplangenerator.data.model.MealPlan
 import com.example.mealplangenerator.data.model.MealSlot
 import com.example.mealplangenerator.data.model.WeeklyMealPlan
-import com.example.mealplangenerator.data.repository.MainDishesRepository
+import com.example.mealplangenerator.data.repository.MainDishesRepositoryInterface
 import com.example.mealplangenerator.enums.Duration
 import com.example.mealplangenerator.enums.MealTime
 import java.time.DayOfWeek
 
-class MealPlanFactory(private val mr: MainDishesRepository) {
+class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
     private val dailyMealTimes =  setOf(MealTime.LUNCH, MealTime.DINNER)
     private var mealsInPlan: MutableList<MainDish> = mutableListOf()
+
+    fun makeMealPlan(): MealPlan
+    {
+        return MealPlan()
+    }
 
     fun makePlanForOneWeek(mealPlanCriteria: Set<MealCriteria>): WeeklyMealPlan {
         var weeklyMealPlan = WeeklyMealPlan()
