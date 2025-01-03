@@ -63,7 +63,7 @@ class MealPlantTest {
         meals.forEach{
             key++
             val mealName = "Meal $key"
-            assertEquals(mealName, it.value.mainDish.name)
+            assertEquals(mealName, it.value?.mainDish?.name)
         }
     }
 
@@ -80,8 +80,14 @@ class MealPlantTest {
         meals.forEach{
             key++
             val mealName = "Meal $key"
-            assertEquals(mealName, it.value.mainDish.name)
+            assertEquals(mealName, it.value?.mainDish?.name)
         }
+    }
+
+    @Test
+    fun aSlotCanBeEmpty()
+    {
+        plan[MealSlot(DayOfWeek.WEDNESDAY, MealTime.LUNCH)] = null
     }
 
 }
