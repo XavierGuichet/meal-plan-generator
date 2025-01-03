@@ -1,4 +1,4 @@
-package com.example.mealplangenerator.data.model
+package com.example.mealplangenerator.data.model.meal
 
 import com.example.mealplangenerator.enums.Duration
 import com.example.mealplangenerator.enums.MealTime

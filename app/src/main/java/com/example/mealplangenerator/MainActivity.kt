@@ -26,7 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mealplangenerator.data.model.MainDish
+import com.example.mealplangenerator.data.model.meal.MainDish
 import com.example.mealplangenerator.enums.MealTime
 import com.example.mealplangenerator.ui.MealPlanViewModel
 import com.example.mealplangenerator.ui.theme.MealPlanGeneratorTheme

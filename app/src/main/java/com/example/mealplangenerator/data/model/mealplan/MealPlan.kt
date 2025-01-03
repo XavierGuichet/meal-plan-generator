@@ -1,6 +1,6 @@
 package com.example.mealplangenerator.data.model.mealplan
 
-import com.example.mealplangenerator.data.model.Meal
+import com.example.mealplangenerator.data.model.meal.Meal
 import com.example.mealplangenerator.enums.MealTime
 import java.time.DayOfWeek
 import java.util.SortedMap
