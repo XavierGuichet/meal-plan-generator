@@ -1,7 +1,7 @@
 package com.example.mealplangenerator.data.repository
 
 import com.example.mealplangenerator.data.model.MainDish
-import com.example.mealplangenerator.data.model.MealCriteria
+import com.example.mealplangenerator.data.model.mealplan.MealCriteria
 import com.example.mealplangenerator.enums.MealTime
 import com.example.mealplangenerator.room.AppDatabase
 
@@ -30,8 +30,8 @@ open class MainDishesRepository(private val db: AppDatabase): MainDishesReposito
         return validDishes
     }
 
-    private fun filterDishesByCriteria(validDishes: List<MainDish>, mealCriteria: MealCriteria ): MutableList<MainDish> {
-        var filteredDishes =validDishes
+    private fun filterDishesByCriteria(validDishes: List<MainDish>, mealCriteria: MealCriteria): MutableList<MainDish> {
+        var filteredDishes = validDishes
         if (mealCriteria.mealTime !== MealTime.ANY)
             filteredDishes = filteredDishes.filter { meal -> (meal.mealTime == mealCriteria.mealTime || meal.mealTime == MealTime.ANY) }
 

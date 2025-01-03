@@ -2,8 +2,8 @@ package com.example.mealplangenerator.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.example.mealplangenerator.data.model.MealCriteria
-import com.example.mealplangenerator.data.model.WeeklyMealPlan
+import com.example.mealplangenerator.data.model.mealplan.MealCriteria
+import com.example.mealplangenerator.data.model.mealplan.WeeklyMealPlan
 import com.example.mealplangenerator.data.repository.MainDishesRepository
 import com.example.mealplangenerator.enums.Duration
 import com.example.mealplangenerator.enums.MealTime

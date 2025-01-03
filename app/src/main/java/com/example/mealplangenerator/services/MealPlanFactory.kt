@@ -2,10 +2,10 @@ package com.example.mealplangenerator.services
 
 import com.example.mealplangenerator.data.model.MainDish
 import com.example.mealplangenerator.data.model.Meal
-import com.example.mealplangenerator.data.model.MealCriteria
-import com.example.mealplangenerator.data.model.MealPlan
-import com.example.mealplangenerator.data.model.MealSlot
-import com.example.mealplangenerator.data.model.WeeklyMealPlan
+import com.example.mealplangenerator.data.model.mealplan.MealCriteria
+import com.example.mealplangenerator.data.model.mealplan.MealPlan
+import com.example.mealplangenerator.data.model.mealplan.MealSlot
+import com.example.mealplangenerator.data.model.mealplan.WeeklyMealPlan
 import com.example.mealplangenerator.data.repository.MainDishesRepositoryInterface
 import com.example.mealplangenerator.enums.Duration
 import com.example.mealplangenerator.enums.MealTime
@@ -43,7 +43,7 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
         return mr.getByCriteria(stapleCriterion)
     }
 
-    private fun getRandomAvailableSlot(mealPlanCriteria: Set<MealCriteria>,it: MainDish): MealSlot {
+    private fun getRandomAvailableSlot(mealPlanCriteria: Set<MealCriteria>, it: MainDish): MealSlot {
         val availableSlot = getAvailableMealSlots(mealPlanCriteria, it.mealTime, it.preparationDuration)
         return availableSlot.random()
     }

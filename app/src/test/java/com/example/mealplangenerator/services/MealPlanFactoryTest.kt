@@ -1,8 +1,8 @@
 package com.example.mealplangenerator.services
 
 import com.example.mealplangenerator.data.model.MainDish
-import com.example.mealplangenerator.data.model.MealCriteria
-import com.example.mealplangenerator.data.model.MealPlan
+import com.example.mealplangenerator.data.model.mealplan.MealCriteria
+import com.example.mealplangenerator.data.model.mealplan.MealPlan
 import com.example.mealplangenerator.data.repository.MainDishesRepositoryInterface
 import org.junit.Assert.assertTrue
 import org.junit.Test

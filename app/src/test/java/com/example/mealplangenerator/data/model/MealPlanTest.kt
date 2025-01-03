@@ -1,5 +1,7 @@
 package com.example.mealplangenerator.data.model
 
+import com.example.mealplangenerator.data.model.mealplan.MealPlan
+import com.example.mealplangenerator.data.model.mealplan.MealSlot
 import com.example.mealplangenerator.enums.MealTime
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
