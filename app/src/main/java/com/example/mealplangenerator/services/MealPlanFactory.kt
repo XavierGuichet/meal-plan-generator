@@ -12,7 +12,6 @@ import com.example.mealplangenerator.enums.MealTime
 import java.time.DayOfWeek
 
 class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
-    private val dailyMealTimes =  setOf(MealTime.LUNCH, MealTime.DINNER)
     private var mealsInPlan: MutableList<MainDish> = mutableListOf()
 
     fun makeMealPlan(): MealPlan
@@ -59,34 +58,29 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
     }
 
     private fun fillPlanWithMeals(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: Set<MealCriteria>): WeeklyMealPlan {
-        weeklyMealPlan.mealPlan.entries.forEach { wmp ->
-            for (dailyMealTime in dailyMealTimes) {
-                val slot = MealSlot(wmp.key, dailyMealTime)
-                if (weeklyMealPlan[slot] != null)
-                    continue
-                val mainDish = getMainDishForCriteria(mealPlanCriteria, wmp.key, dailyMealTime)
-                if (mainDish != null) {
-                    weeklyMealPlan[slot] = Meal(mainDish)
-                    mealsInPlan.add(mainDish)
-                }
+        weeklyMealPlan.forEach { (slot, meal) ->
+            if (meal != null) return@forEach
+            getMainDishForCriteria(mealPlanCriteria, slot)?.let { mainDish ->
+                val newMeal = Meal(mainDish)
+                mealsInPlan.add(mainDish)
+                weeklyMealPlan[slot] = newMeal
             }
         }
-
         return weeklyMealPlan
     }
 
     private fun getMainDishForCriteria(
         mealPlanCriteria: Set<MealCriteria>,
-        weekDay: DayOfWeek, mealTime: MealTime,
+        mealSlot: MealSlot,
     ):MainDish? {
-        val lunchMealCriteria = findMealCriteria(mealPlanCriteria, weekDay, mealTime)
+        val lunchMealCriteria = findMealCriteria(mealPlanCriteria, mealSlot)
         return selectDishWithCriteria(lunchMealCriteria)
     }
 
-    private fun findMealCriteria(mealPlanCriteria: Set<MealCriteria>, weekDay: DayOfWeek,mealTime: MealTime): MealCriteria {
-        var criteria = mealPlanCriteria.find { config -> (config.dayOfWeek == weekDay && config.mealTime == mealTime) }
+    private fun findMealCriteria(mealPlanCriteria: Set<MealCriteria>, mealSlot: MealSlot): MealCriteria {
+        var criteria = mealPlanCriteria.find { config -> (config.dayOfWeek == mealSlot.dayOfWeek && config.mealTime == mealSlot.mealTime) }
         if (criteria == null)
-            criteria = MealCriteria(weekDay, mealTime)
+            criteria = MealCriteria(mealSlot.dayOfWeek, mealSlot.mealTime)
         return criteria
     }
 
