@@ -8,7 +8,7 @@ import org.junit.Before
 import org.junit.Test
 import java.time.DayOfWeek
 
-class MealPlantTest {
+class MealPlanTest {
     private lateinit var plan: MealPlan
 
     @Before
