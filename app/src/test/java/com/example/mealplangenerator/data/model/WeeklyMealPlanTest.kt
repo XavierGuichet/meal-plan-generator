@@ -29,19 +29,10 @@ class WeeklyMealPlanTest {
     }
 
     @Test
-    fun canAddAndRetrieveMeal_WithLegacyMethod()
-    {
-        wmp.addMealToSlot(MainDish("My dish") ,DayOfWeek.MONDAY, MealTime.LUNCH)
-
-        val myDish = wmp.getMealAtSlot(DayOfWeek.MONDAY, MealTime.LUNCH);
-        assertEquals("My dish", myDish?.name)
-    }
-
-    @Test
     fun getLegacyWmpFormat()
     {
-        wmp.addMealToSlot(MainDish("My dish 1") ,DayOfWeek.MONDAY, MealTime.LUNCH)
-        wmp.addMealToSlot(MainDish("My dish 2") ,DayOfWeek.WEDNESDAY, MealTime.DINNER)
+        wmp[MealSlot(DayOfWeek.MONDAY, MealTime.LUNCH)] = Meal(MainDish("My dish 1"))
+        wmp[MealSlot(DayOfWeek.WEDNESDAY, MealTime.DINNER)] = Meal(MainDish("My dish 2"))
 
         val legacyWMPMealPlan = wmp.mealPlan
 
@@ -52,7 +43,4 @@ class WeeklyMealPlanTest {
         assertTrue(legacyWMPMealPlan[DayOfWeek.WEDNESDAY]?.containsKey(MealTime.DINNER) ?: false)
         assertEquals("My dish 2", legacyWMPMealPlan[DayOfWeek.WEDNESDAY]?.get(MealTime.DINNER)?.name ?: "Name Not Found")
     }
-
-
-
 }

@@ -32,20 +32,4 @@ class WeeklyMealPlan : MealPlan() {
 
         return mealPlan
     }
-
-    @Deprecated("use WeeklyMealPlan[MealSlot] = Meal")
-    fun addMealToSlot(dish: MainDish, dayOfWeek: DayOfWeek, mealTime: MealTime)
-    {
-        val mealSlot = MealSlot(dayOfWeek, mealTime)
-        this[mealSlot] = Meal(dish)
-    }
-
-    @Deprecated("use WeeklyMealPlan[MealSlot]")
-    fun getMealAtSlot(dayOfWeek: DayOfWeek, mealTime: MealTime): MainDish? {
-        val mealSlot = MealSlot(dayOfWeek, mealTime)
-        val meal = this[mealSlot]
-        return meal?.mainDish
-    }
-
-
 }

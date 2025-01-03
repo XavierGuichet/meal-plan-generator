@@ -1,6 +1,7 @@
 package com.example.mealplangenerator.services
 
 import com.example.mealplangenerator.data.model.MainDish
+import com.example.mealplangenerator.data.model.Meal
 import com.example.mealplangenerator.data.model.MealCriteria
 import com.example.mealplangenerator.data.model.MealPlan
 import com.example.mealplangenerator.data.model.MealSlot
@@ -33,7 +34,7 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
         // FIXME : a stapleMeal can override another stapleMeal
         stapleMeals.forEach {
             val winningSlot = getRandomAvailableSlot(mealPlanCriteria, it)
-            weeklyMealPlan.addMealToSlot(it, winningSlot.dayOfWeek, winningSlot.mealTime)
+            weeklyMealPlan[winningSlot] = Meal(it)
         }
         return weeklyMealPlan
     }
@@ -60,12 +61,13 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
     private fun fillPlanWithMeals(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: Set<MealCriteria>): WeeklyMealPlan {
         weeklyMealPlan.mealPlan.entries.forEach { wmp ->
             for (dailyMealTime in dailyMealTimes) {
-                if (weeklyMealPlan.getMealAtSlot(wmp.key, dailyMealTime) != null)
+                val slot = MealSlot(wmp.key, dailyMealTime)
+                if (weeklyMealPlan[slot] != null)
                     continue
-                val meal = getOneMealForCriteria(mealPlanCriteria, wmp.key, dailyMealTime)
-                if (meal != null) {
-                    weeklyMealPlan.addMealToSlot(meal, wmp.key, dailyMealTime)
-                    mealsInPlan.add(meal)
+                val mainDish = getMainDishForCriteria(mealPlanCriteria, wmp.key, dailyMealTime)
+                if (mainDish != null) {
+                    weeklyMealPlan[slot] = Meal(mainDish)
+                    mealsInPlan.add(mainDish)
                 }
             }
         }
@@ -73,7 +75,7 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
         return weeklyMealPlan
     }
 
-    private fun getOneMealForCriteria(
+    private fun getMainDishForCriteria(
         mealPlanCriteria: Set<MealCriteria>,
         weekDay: DayOfWeek, mealTime: MealTime,
     ):MainDish? {
