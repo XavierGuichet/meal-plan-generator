@@ -52,7 +52,7 @@ class MealPlanViewModel(application: Application) : AndroidViewModel(application
         val db = getAppDataBase()
         val dishesRepository = MainDishesRepository(db)
         val mealPlanFactory = MealPlanFactory(dishesRepository)
-        currentWeeklyMealPlan = mealPlanFactory.makePlanForOneWeek(mealPlanCriteria)
+        currentWeeklyMealPlan = mealPlanFactory.makeWeeklyMealPlan(mealPlanCriteria)
 
         updateMealPlan()
         return currentWeeklyMealPlan

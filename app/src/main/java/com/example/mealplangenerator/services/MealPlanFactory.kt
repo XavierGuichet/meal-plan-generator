@@ -14,12 +14,7 @@ import java.time.DayOfWeek
 class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
     private var mainDishesInPlan: MutableList<MainDish> = mutableListOf()
 
-    fun makeMealPlan(): MealPlan
-    {
-        return MealPlan()
-    }
-
-    fun makePlanForOneWeek(mealPlanCriteria: Set<MealCriteria>): WeeklyMealPlan {
+    fun makeWeeklyMealPlan(mealPlanCriteria: Set<MealCriteria>): WeeklyMealPlan {
         var weeklyMealPlan = WeeklyMealPlan()
         weeklyMealPlan = addStapleMealsToPlan(weeklyMealPlan, mealPlanCriteria)
 
@@ -60,7 +55,8 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
     private fun fillPlanWithMeals(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: Set<MealCriteria>): WeeklyMealPlan {
         weeklyMealPlan.forEach { (slot, meal) ->
             if (meal != null) return@forEach
-            getMealForCriteria(mealPlanCriteria, slot)?.let { newMeal ->
+            val mealCriteria = findMealCriteria(mealPlanCriteria, slot)
+            makeMealForCriteria(mealCriteria)?.let { newMeal ->
                 addMealToMealPlan(newMeal, weeklyMealPlan, slot)
             }
         }
@@ -72,20 +68,11 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
         weeklyMealPlan[slot] = meal
     }
 
-    private fun getMealForCriteria(
-    mealPlanCriteria: Set<MealCriteria>,
-    mealSlot: MealSlot
+    private fun makeMealForCriteria(
+        mealCriteria: MealCriteria
     ): Meal? {
-        val mainDish = getMainDishForCriteria(mealPlanCriteria, mealSlot)
+        val mainDish = selectDishWithCriteria(mealCriteria)
         return mainDish?.let { Meal(it) }
-    }
-
-    private fun getMainDishForCriteria(
-        mealPlanCriteria: Set<MealCriteria>,
-        mealSlot: MealSlot,
-    ): MainDish? {
-        val lunchMealCriteria = findMealCriteria(mealPlanCriteria, mealSlot)
-        return selectDishWithCriteria(lunchMealCriteria)
     }
 
     private fun findMealCriteria(mealPlanCriteria: Set<MealCriteria>, mealSlot: MealSlot): MealCriteria {
