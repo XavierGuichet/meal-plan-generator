@@ -5,10 +5,10 @@ import com.example.mealplangenerator.data.model.mealplan.MealCriteria
 import com.example.mealplangenerator.data.repository.MainDishesRepositoryInterface
 import kotlin.random.Random
 
-class MealFactory(private val mainDishRepo: MainDishesRepositoryInterface) {
+class MealFactory(private val mainDishRepo: MainDishesRepositoryInterface): MealFactoryInterface {
     var random: Random = Random.Default
 
-    fun getRandomMeal(mealCriteria: MealCriteria? = null): Meal? {
+    override fun getRandomMeal(mealCriteria: MealCriteria?): Meal? {
         val availableMainDish = mainDishRepo.getByCriteria(mealCriteria)
         if (availableMainDish.isEmpty())
             return null
