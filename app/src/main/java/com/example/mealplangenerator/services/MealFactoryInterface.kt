@@ -5,6 +5,4 @@ import com.example.mealplangenerator.data.model.mealplan.MealCriteria
 
 interface MealFactoryInterface {
     fun getRandomMeal(mealCriteria: MealCriteria? = null): Meal?
-
-    fun prepareAllStapleMeal(): List<Meal>
 }
