@@ -5,6 +5,10 @@ import com.example.mealplangenerator.enums.MealTime
 
 class MealCriteria(
     val mealTime: MealTime = MealTime.ANY,
-    val maxPreparationDuration: Duration = Duration.SUPER,
+    var maxPreparationDuration: Duration = Duration.SUPER,
     val isStaple: Boolean = false
-)
+) {
+    fun setDuration(duration: Duration) {
+        maxPreparationDuration = duration
+    }
+}

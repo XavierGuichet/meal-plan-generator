@@ -2,7 +2,8 @@ package com.example.mealplangenerator.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.example.mealplangenerator.data.model.mealplan.MealCriteria
+import com.example.mealplangenerator.data.model.mealplan.MealPlanCriteria
+import com.example.mealplangenerator.data.model.mealplan.MealSlot
 import com.example.mealplangenerator.data.model.mealplan.WeeklyMealPlan
 import com.example.mealplangenerator.data.repository.MainDishesRepository
 import com.example.mealplangenerator.enums.Duration
@@ -33,22 +34,23 @@ class MealPlanViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun generateMealPlan(): WeeklyMealPlan {
-        val mealPlanCriteria = setOf(
-            MealCriteria(DayOfWeek.MONDAY, MealTime.LUNCH, Duration.SHORT),
-            MealCriteria(DayOfWeek.MONDAY, MealTime.DINNER, Duration.MEDIUM),
-            MealCriteria(DayOfWeek.TUESDAY, MealTime.LUNCH, Duration.SHORT),
-            MealCriteria(DayOfWeek.TUESDAY, MealTime.DINNER, Duration.MEDIUM),
-            MealCriteria(DayOfWeek.WEDNESDAY, MealTime.LUNCH, Duration.SHORT),
-            MealCriteria(DayOfWeek.WEDNESDAY, MealTime.DINNER, Duration.MEDIUM),
-            MealCriteria(DayOfWeek.THURSDAY, MealTime.LUNCH, Duration.SHORT),
-            MealCriteria(DayOfWeek.THURSDAY, MealTime.DINNER, Duration.MEDIUM),
-            MealCriteria(DayOfWeek.FRIDAY, MealTime.LUNCH, Duration.SHORT),
-            MealCriteria(DayOfWeek.FRIDAY, MealTime.DINNER, Duration.MEDIUM),
-            MealCriteria(DayOfWeek.SATURDAY, MealTime.LUNCH, Duration.SHORT),
-            MealCriteria(DayOfWeek.SATURDAY, MealTime.DINNER, Duration.MEDIUM),
-            MealCriteria(DayOfWeek.SUNDAY, MealTime.LUNCH, Duration.SHORT),
-            MealCriteria(DayOfWeek.SUNDAY, MealTime.DINNER, Duration.MEDIUM)
-        )
+        val weeklyMealPlan = WeeklyMealPlan()
+        val mealPlanCriteria = MealPlanCriteria(weeklyMealPlan)
+        mealPlanCriteria[MealSlot(DayOfWeek.MONDAY, MealTime.LUNCH)]?.setDuration(Duration.SHORT)
+        mealPlanCriteria[MealSlot(DayOfWeek.MONDAY, MealTime.DINNER)]?.setDuration(Duration.MEDIUM)
+        mealPlanCriteria[MealSlot(DayOfWeek.TUESDAY, MealTime.LUNCH)]?.setDuration(Duration.SHORT)
+        mealPlanCriteria[MealSlot(DayOfWeek.TUESDAY, MealTime.DINNER)]?.setDuration(Duration.MEDIUM)
+        mealPlanCriteria[MealSlot(DayOfWeek.WEDNESDAY, MealTime.LUNCH)]?.setDuration(Duration.SHORT)
+        mealPlanCriteria[MealSlot(DayOfWeek.WEDNESDAY, MealTime.DINNER)]?.setDuration(Duration.MEDIUM)
+        mealPlanCriteria[MealSlot(DayOfWeek.THURSDAY, MealTime.LUNCH)]?.setDuration(Duration.SHORT)
+        mealPlanCriteria[MealSlot(DayOfWeek.THURSDAY, MealTime.DINNER)]?.setDuration(Duration.MEDIUM)
+        mealPlanCriteria[MealSlot(DayOfWeek.FRIDAY, MealTime.LUNCH)]?.setDuration(Duration.SHORT)
+        mealPlanCriteria[MealSlot(DayOfWeek.FRIDAY, MealTime.DINNER,)]?.setDuration(Duration.MEDIUM)
+        mealPlanCriteria[MealSlot(DayOfWeek.SATURDAY, MealTime.LUNCH)]?.setDuration(Duration.SHORT)
+        mealPlanCriteria[MealSlot(DayOfWeek.SATURDAY, MealTime.DINNER,)]?.setDuration(Duration.MEDIUM)
+        mealPlanCriteria[MealSlot(DayOfWeek.SUNDAY, MealTime.LUNCH)]?.setDuration(Duration.SHORT)
+        mealPlanCriteria[MealSlot(DayOfWeek.SUNDAY, MealTime.DINNER)]?.setDuration(Duration.MEDIUM)
+
         val db = getAppDataBase()
         val dishesRepository = MainDishesRepository(db)
         val mealPlanFactory = MealPlanFactory(dishesRepository)

@@ -3,18 +3,17 @@ package com.example.mealplangenerator.services
 import com.example.mealplangenerator.data.model.meal.MainDish
 import com.example.mealplangenerator.data.model.meal.Meal
 import com.example.mealplangenerator.data.model.mealplan.MealCriteria
-import com.example.mealplangenerator.data.model.mealplan.MealPlan
+import com.example.mealplangenerator.data.model.mealplan.MealPlanCriteria
 import com.example.mealplangenerator.data.model.mealplan.MealSlot
 import com.example.mealplangenerator.data.model.mealplan.WeeklyMealPlan
 import com.example.mealplangenerator.data.repository.MainDishesRepositoryInterface
 import com.example.mealplangenerator.enums.Duration
 import com.example.mealplangenerator.enums.MealTime
-import java.time.DayOfWeek
 
 class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
     private var mainDishesInPlan: MutableList<MainDish> = mutableListOf()
 
-    fun makeWeeklyMealPlan(mealPlanCriteria: Set<MealCriteria>): WeeklyMealPlan {
+    fun makeWeeklyMealPlan(mealPlanCriteria: MealPlanCriteria): WeeklyMealPlan {
         var weeklyMealPlan = WeeklyMealPlan()
         weeklyMealPlan = addStapleMealsToPlan(weeklyMealPlan, mealPlanCriteria)
 
@@ -23,7 +22,7 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
         return weeklyMealPlan
     }
 
-    private fun addStapleMealsToPlan(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: Set<MealCriteria>): WeeklyMealPlan {
+    private fun addStapleMealsToPlan(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: MealPlanCriteria): WeeklyMealPlan {
         val stapleMainDishes = getStapleMainDishes()
         // FIXME : a stapleMeal can override another stapleMeal
         stapleMainDishes.forEach {
@@ -34,28 +33,28 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
     }
 
     private fun getStapleMainDishes(): List<MainDish> {
-        val stapleCriterion = MealCriteria(DayOfWeek.SUNDAY, MealTime.ANY, Duration.QUICK, true)
+        val stapleCriterion = MealCriteria(MealTime.ANY, Duration.QUICK, true)
         return mr.getByCriteria(stapleCriterion)
     }
 
-    private fun getRandomAvailableSlot(mealPlanCriteria: Set<MealCriteria>, it: MainDish): MealSlot {
+    private fun getRandomAvailableSlot(mealPlanCriteria: MealPlanCriteria, it: MainDish): MealSlot {
         val availableSlot = getAvailableMealSlots(mealPlanCriteria, it.mealTime, it.preparationDuration)
         return availableSlot.random()
     }
 
-    private fun getAvailableMealSlots(mealPlanCriteria: Set<MealCriteria>, mealTime: MealTime, duration: Duration): List<MealSlot> {
-        val availableMpc = mealPlanCriteria.filter { mpc -> mealTime == mpc.mealTime && duration <= mpc.maxPreparationDuration }
+    private fun getAvailableMealSlots(mealPlanCriteria: MealPlanCriteria, mealTime: MealTime, duration: Duration): List<MealSlot> {
+        val availableMpc = mealPlanCriteria.filter { mpc -> mealTime == mpc.value.mealTime && duration <= mpc.value.maxPreparationDuration }
         val availableSlot: List<MealSlot> = availableMpc.map { mpc ->
-            MealSlot(mpc.dayOfWeek, mpc.mealTime)
+            MealSlot(mpc.key.dayOfWeek, mpc.key.mealTime)
         }
 
         return availableSlot
     }
 
-    private fun fillPlanWithMeals(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: Set<MealCriteria>): WeeklyMealPlan {
+    private fun fillPlanWithMeals(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: MealPlanCriteria): WeeklyMealPlan {
         weeklyMealPlan.forEach { (slot, meal) ->
             if (meal != null) return@forEach
-            val mealCriteria = findMealCriteria(mealPlanCriteria, slot)
+            val mealCriteria = mealPlanCriteria[slot] ?: MealCriteria(slot.mealTime)
             makeMealForCriteria(mealCriteria)?.let { newMeal ->
                 addMealToMealPlan(newMeal, weeklyMealPlan, slot)
             }
@@ -73,13 +72,6 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
     ): Meal? {
         val mainDish = selectDishWithCriteria(mealCriteria)
         return mainDish?.let { Meal(it) }
-    }
-
-    private fun findMealCriteria(mealPlanCriteria: Set<MealCriteria>, mealSlot: MealSlot): MealCriteria {
-        var criteria = mealPlanCriteria.find { config -> (config.dayOfWeek == mealSlot.dayOfWeek && config.mealTime == mealSlot.mealTime) }
-        if (criteria == null)
-            criteria = MealCriteria(mealSlot.dayOfWeek, mealSlot.mealTime)
-        return criteria
     }
 
     private fun selectDishWithCriteria(mealCriteria: MealCriteria): MainDish? {
