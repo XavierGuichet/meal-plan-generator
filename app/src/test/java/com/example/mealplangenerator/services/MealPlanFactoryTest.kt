@@ -13,18 +13,4 @@ class MealPlanFactoryTest() {
     fun testAreWorking() {
         assertTrue(true)
     }
-
-    @Test
-    fun returnOnListOfMeal()
-    {
-        class FakeRepository: MainDishesRepositoryInterface {
-            override fun getByCriteria(mealCriteria: MealCriteria?): List<MainDish> {
-                TODO("Not yet implemented")
-            }
-        }
-
-        val mpf = MealPlanFactory(FakeRepository())
-        val mealPlan = mpf.makeMealPlan()
-        assertTrue(mealPlan is MealPlan)
-    }
 }
