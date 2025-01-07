@@ -23,11 +23,17 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
     }
 
     private fun addStapleMealsToPlan(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: MealPlanCriteria): WeeklyMealPlan {
-        val stapleMainDishes = getStapleMainDishes()
-        // FIXME : a stapleMeal can override another stapleMeal
+        val stapleMainDishes = getStapleMainDishes().shuffled()
         stapleMainDishes.forEach {
-            val winningSlot = getRandomAvailableSlot(mealPlanCriteria, it)
-            addMealToMealPlan(Meal(it), weeklyMealPlan, winningSlot)
+            val availableSlots = mealPlanCriteria.findSlotsWithCriteria(MealCriteria(it.mealTime, it.preparationDuration)).shuffled().toMutableList()
+            var validSlot: MealSlot? = null;
+            while (availableSlots.isNotEmpty() && validSlot == null) {
+                val testSlot = availableSlots.removeAt(0)
+                if (weeklyMealPlan[testSlot] == null) {
+                    validSlot = testSlot
+                    addMealToMealPlan(Meal(it), weeklyMealPlan, testSlot)
+                }
+            }
         }
         return weeklyMealPlan
     }
