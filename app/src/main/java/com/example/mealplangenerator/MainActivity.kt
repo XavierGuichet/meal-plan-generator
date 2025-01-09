@@ -26,7 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mealplangenerator.data.model.meal.MainDish
+import com.example.mealplangenerator.data.model.meal.Meal
 import com.example.mealplangenerator.enums.MealTime
 import com.example.mealplangenerator.ui.MealPlanViewModel
 import com.example.mealplangenerator.ui.theme.MealPlanGeneratorTheme
@@ -50,12 +50,13 @@ class MainActivity : ComponentActivity() {
 fun WeekMealPlan(modifier: Modifier = Modifier, mealPlanViewModel: MealPlanViewModel = viewModel())
 {
     val mealPlanUiState by mealPlanViewModel.uiState.collectAsState()
-    val mealPlan = mealPlanUiState.weeklyMealPlan.mealPlan
+    val planDays = mealPlanUiState.weeklyMealPlan.getSortedDays()
+
     Column (modifier = modifier) {
         Card(modifier = Modifier.fillMaxHeight(0.8f))
         {
-            mealPlan.entries.forEach {
-                DayComponent(it.key, it.value)
+            planDays.forEach {
+                DayComponent(it, mealPlanUiState.weeklyMealPlan.getByDay(it))
             }
         }
 
@@ -63,11 +64,10 @@ fun WeekMealPlan(modifier: Modifier = Modifier, mealPlanViewModel: MealPlanViewM
             Text(stringResource(R.string.regenerate_plan))
         }
     }
-
 }
 
 @Composable
-fun DayComponent(day: DayOfWeek, dayMealPlan: HashMap<MealTime, MainDish?>?)
+fun DayComponent(day: DayOfWeek, dayMealPlan: HashMap<MealTime, Meal?>?)
 {
     val lunchMeal = dayMealPlan?.get(MealTime.LUNCH)
     val dinnerMeal = dayMealPlan?.get(MealTime.DINNER)
@@ -104,14 +104,15 @@ fun DayComponent(day: DayOfWeek, dayMealPlan: HashMap<MealTime, MainDish?>?)
 }
 
 @Composable
-fun MealCard(meal: MainDish?, modifier: Modifier = Modifier)
+fun MealCard(meal: Meal?, modifier: Modifier = Modifier)
 {
     var mealName = "---"
     if (meal != null)
     {
-        mealName = meal.name
-        if (meal.variation.isNotEmpty()) {
-            mealName += " " + meal.variation.random()
+        val mainDish = meal.mainDish
+        mealName = mainDish.name
+        if (mainDish.variation.isNotEmpty()) {
+            mealName += " " + mainDish.variation.random()
         }
     }
 
