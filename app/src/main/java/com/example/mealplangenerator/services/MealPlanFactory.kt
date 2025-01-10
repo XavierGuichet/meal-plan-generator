@@ -7,8 +7,6 @@ import com.example.mealplangenerator.data.model.mealplan.MealPlanCriteria
 import com.example.mealplangenerator.data.model.mealplan.MealSlot
 import com.example.mealplangenerator.data.model.mealplan.WeeklyMealPlan
 import com.example.mealplangenerator.data.repository.MainDishesRepositoryInterface
-import com.example.mealplangenerator.enums.Duration
-import com.example.mealplangenerator.enums.MealTime
 
 class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
     private var mainDishesInPlan: MutableList<MainDish> = mutableListOf()
@@ -36,20 +34,6 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
             }
         }
         return weeklyMealPlan
-    }
-
-    private fun getRandomAvailableSlot(mealPlanCriteria: MealPlanCriteria, it: MainDish): MealSlot {
-        val availableSlot = getAvailableMealSlots(mealPlanCriteria, it.mealTime, it.preparationDuration)
-        return availableSlot.random()
-    }
-
-    private fun getAvailableMealSlots(mealPlanCriteria: MealPlanCriteria, mealTime: MealTime, duration: Duration): List<MealSlot> {
-        val availableMpc = mealPlanCriteria.filter { mpc -> mealTime == mpc.value.mealTime && duration <= mpc.value.maxPreparationDuration }
-        val availableSlot: List<MealSlot> = availableMpc.map { mpc ->
-            MealSlot(mpc.key.dayOfWeek, mpc.key.mealTime)
-        }
-
-        return availableSlot
     }
 
     private fun fillPlanWithMeals(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: MealPlanCriteria): WeeklyMealPlan {
