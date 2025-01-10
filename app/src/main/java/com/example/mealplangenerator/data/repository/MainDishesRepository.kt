@@ -30,14 +30,18 @@ open class MainDishesRepository(private val db: AppDatabase): MainDishesReposito
         return validDishes
     }
 
+    override fun getStapleDishes(): List<MainDish> {
+        if (!initialized)
+            initAllDishes()
+        return allDishes.filter { meal -> meal.isStaple }
+    }
+
     private fun filterDishesByCriteria(validDishes: List<MainDish>, mealCriteria: MealCriteria): MutableList<MainDish> {
         var filteredDishes = validDishes
         if (mealCriteria.mealTime !== MealTime.ANY)
             filteredDishes = filteredDishes.filter { meal -> (meal.mealTime == mealCriteria.mealTime || meal.mealTime == MealTime.ANY) }
 
         filteredDishes = filteredDishes.filter { meal -> meal.preparationDuration <= mealCriteria.maxPreparationDuration }
-
-        filteredDishes = filteredDishes.filter { meal -> meal.isStaple == mealCriteria.isStaple }
 
         return filteredDishes.toMutableList()
     }

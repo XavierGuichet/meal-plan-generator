@@ -23,10 +23,10 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
     }
 
     private fun addStapleMealsToPlan(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: MealPlanCriteria): WeeklyMealPlan {
-        val stapleMainDishes = getStapleMainDishes().shuffled()
+        val stapleMainDishes = mr.getStapleDishes().shuffled()
         stapleMainDishes.forEach {
             val availableSlots = mealPlanCriteria.findSlotsWithCriteria(MealCriteria(it.mealTime, it.preparationDuration)).shuffled().toMutableList()
-            var validSlot: MealSlot? = null;
+            var validSlot: MealSlot? = null
             while (availableSlots.isNotEmpty() && validSlot == null) {
                 val testSlot = availableSlots.removeAt(0)
                 if (weeklyMealPlan[testSlot] == null) {
@@ -36,11 +36,6 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
             }
         }
         return weeklyMealPlan
-    }
-
-    private fun getStapleMainDishes(): List<MainDish> {
-        val stapleCriterion = MealCriteria(MealTime.ANY, Duration.QUICK, true)
-        return mr.getByCriteria(stapleCriterion)
     }
 
     private fun getRandomAvailableSlot(mealPlanCriteria: MealPlanCriteria, it: MainDish): MealSlot {

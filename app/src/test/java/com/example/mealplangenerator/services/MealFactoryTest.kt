@@ -19,6 +19,10 @@ class MealFactoryTest {
                 return dishList
             return dishList.filter { meal -> (meal.mealTime == mealCriteria.mealTime || meal.mealTime == MealTime.ANY) }
         }
+
+        override fun getStapleDishes(): List<MainDish> {
+            TODO("NotUsed")
+        }
     }
     private lateinit var factory: MealFactory
     private var mainDishRepo: FakeRepository = FakeRepository()
