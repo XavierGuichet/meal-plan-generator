@@ -1,11 +1,11 @@
 package com.example.mealplangenerator.data.model.meal
 
-import com.example.mealplangenerator.data.model.mealplan.MealCriteria
+import com.example.mealplangenerator.data.model.mealplan.slot.Criteria
 import com.example.mealplangenerator.data.model.mealplan.PlanRules
 
 data class MainDish(
     var name: String,
     var variation: List<String> = emptyList<String>(),
-    var mealCriteria: MealCriteria = MealCriteria(),
+    var slotCriteria: Criteria = Criteria(),
     var planRules: PlanRules = PlanRules()
 )

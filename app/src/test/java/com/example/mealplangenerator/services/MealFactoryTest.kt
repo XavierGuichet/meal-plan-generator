@@ -2,7 +2,7 @@ package com.example.mealplangenerator.services
 
 import com.example.mealplangenerator.data.model.meal.MainDish
 import com.example.mealplangenerator.data.model.meal.Meal
-import com.example.mealplangenerator.data.model.mealplan.MealCriteria
+import com.example.mealplangenerator.data.model.mealplan.slot.Criteria
 import com.example.mealplangenerator.data.repository.MainDishesRepositoryInterface
 import com.example.mealplangenerator.enums.MealTime
 import org.junit.Assert.*
@@ -14,10 +14,10 @@ import kotlin.random.Random
 class MealFactoryTest {
     class FakeRepository: MainDishesRepositoryInterface {
         var dishList: List<MainDish> = emptyList()
-        override fun getByCriteria(mealCriteria: MealCriteria?): List<MainDish> {
-            if (mealCriteria == null)
+        override fun getByCriteria(slotCriteria: Criteria?): List<MainDish> {
+            if (slotCriteria == null)
                 return dishList
-            return dishList.filter { meal -> (meal.mealCriteria.mealTime == mealCriteria.mealTime || meal.mealCriteria.mealTime == MealTime.ANY) }
+            return dishList.filter { meal -> (meal.slotCriteria.mealTime == slotCriteria.mealTime || meal.slotCriteria.mealTime == MealTime.ANY) }
         }
 
         override fun getStapleDishes(): List<MainDish> {
@@ -81,8 +81,8 @@ class MealFactoryTest {
     fun getRandomMeal_returnOnlyMealRespectingCriteria()
     {
         mainDishRepo.dishList = listOf(
-            MainDish("My Dish 1", emptyList(), MealCriteria(MealTime.DINNER)),
-            MainDish("My Dish 2", emptyList(), MealCriteria(MealTime.LUNCH)),
+            MainDish("My Dish 1", emptyList(), Criteria(MealTime.DINNER)),
+            MainDish("My Dish 2", emptyList(), Criteria(MealTime.LUNCH)),
         )
         class FakeRandom: Random() {
             override fun nextBits(bitCount: Int): Int {
@@ -92,7 +92,7 @@ class MealFactoryTest {
         val randomGen = FakeRandom()
         factory.random = randomGen
 
-        val meal = factory.getRandomMeal(MealCriteria(MealTime.LUNCH))
+        val meal = factory.getRandomMeal(Criteria(MealTime.LUNCH))
         assertEquals("My Dish 2", meal!!.mainDish.name)
     }
 

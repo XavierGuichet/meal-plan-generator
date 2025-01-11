@@ -2,7 +2,7 @@ package com.example.mealplangenerator.services
 
 import com.example.mealplangenerator.data.model.meal.MainDish
 import com.example.mealplangenerator.data.model.meal.Meal
-import com.example.mealplangenerator.data.model.mealplan.MealCriteria
+import com.example.mealplangenerator.data.model.mealplan.slot.Criteria
 import com.example.mealplangenerator.data.model.mealplan.MealPlanCriteria
 import com.example.mealplangenerator.data.model.mealplan.slot.Slot
 import com.example.mealplangenerator.data.model.mealplan.WeeklyMealPlan
@@ -23,7 +23,7 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
     private fun addStapleMealsToPlan(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: MealPlanCriteria): WeeklyMealPlan {
         val stapleMainDishes = mr.getStapleDishes().shuffled()
         stapleMainDishes.forEach {
-            val availableSlots = mealPlanCriteria.findSlotsWithCriteria(it.mealCriteria).shuffled().toMutableList()
+            val availableSlots = mealPlanCriteria.findSlotsWithCriteria(it.slotCriteria).shuffled().toMutableList()
             var validSlot: Slot? = null
             while (availableSlots.isNotEmpty() && validSlot == null) {
                 val testSlot = availableSlots.removeAt(0)
@@ -39,8 +39,8 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
     private fun fillPlanWithMeals(weeklyMealPlan: WeeklyMealPlan, mealPlanCriteria: MealPlanCriteria): WeeklyMealPlan {
         weeklyMealPlan.forEach { (slot, meal) ->
             if (meal != null) return@forEach
-            val mealCriteria = mealPlanCriteria[slot] ?: MealCriteria(slot.mealTime)
-            makeMealForCriteria(mealCriteria)?.let { newMeal ->
+            val slotCriteria = mealPlanCriteria[slot] ?: Criteria(slot.mealTime)
+            makeMealForCriteria(slotCriteria)?.let { newMeal ->
                 addMealToMealPlan(newMeal, weeklyMealPlan, slot)
             }
         }
@@ -53,14 +53,14 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
     }
 
     private fun makeMealForCriteria(
-        mealCriteria: MealCriteria
+        slotCriteria: Criteria
     ): Meal? {
-        val mainDish = selectDishWithCriteria(mealCriteria)
+        val mainDish = selectDishWithCriteria(slotCriteria)
         return mainDish?.let { Meal(it) }
     }
 
-    private fun selectDishWithCriteria(mealCriteria: MealCriteria): MainDish? {
-        val eligibleMeals = mr.getByCriteria(mealCriteria).toMutableList()
+    private fun selectDishWithCriteria(slotCriteria: Criteria): MainDish? {
+        val eligibleMeals = mr.getByCriteria(slotCriteria).toMutableList()
         var selectDish: MainDish? = null
 
         while (selectDish == null && eligibleMeals.isNotEmpty())
