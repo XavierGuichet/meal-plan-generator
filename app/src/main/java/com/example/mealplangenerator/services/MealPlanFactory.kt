@@ -4,7 +4,7 @@ import com.example.mealplangenerator.data.model.meal.MainDish
 import com.example.mealplangenerator.data.model.meal.Meal
 import com.example.mealplangenerator.data.model.mealplan.MealCriteria
 import com.example.mealplangenerator.data.model.mealplan.MealPlanCriteria
-import com.example.mealplangenerator.data.model.mealplan.MealSlot
+import com.example.mealplangenerator.data.model.mealplan.slot.Slot
 import com.example.mealplangenerator.data.model.mealplan.WeeklyMealPlan
 import com.example.mealplangenerator.data.repository.MainDishesRepositoryInterface
 
@@ -24,7 +24,7 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
         val stapleMainDishes = mr.getStapleDishes().shuffled()
         stapleMainDishes.forEach {
             val availableSlots = mealPlanCriteria.findSlotsWithCriteria(it.mealCriteria).shuffled().toMutableList()
-            var validSlot: MealSlot? = null
+            var validSlot: Slot? = null
             while (availableSlots.isNotEmpty() && validSlot == null) {
                 val testSlot = availableSlots.removeAt(0)
                 if (weeklyMealPlan[testSlot] == null) {
@@ -47,7 +47,7 @@ class MealPlanFactory(private val mr: MainDishesRepositoryInterface) {
         return weeklyMealPlan
     }
 
-    private fun addMealToMealPlan(meal: Meal, weeklyMealPlan: WeeklyMealPlan, slot: MealSlot) {
+    private fun addMealToMealPlan(meal: Meal, weeklyMealPlan: WeeklyMealPlan, slot: Slot) {
         mainDishesInPlan.add(meal.mainDish)
         weeklyMealPlan[slot] = meal
     }

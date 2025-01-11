@@ -3,7 +3,7 @@ package com.example.mealplangenerator.data.model
 import com.example.mealplangenerator.data.model.meal.MainDish
 import com.example.mealplangenerator.data.model.meal.Meal
 import com.example.mealplangenerator.data.model.mealplan.MealPlan
-import com.example.mealplangenerator.data.model.mealplan.MealSlot
+import com.example.mealplangenerator.data.model.mealplan.slot.Slot
 import com.example.mealplangenerator.enums.MealTime
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -30,14 +30,14 @@ class MealPlanTest {
     @Test
     fun afterAddMeal_isNotEmpty()
     {
-        plan[MealSlot(DayOfWeek.MONDAY, MealTime.LUNCH)] = Meal(MainDish("Meal 1"))
+        plan[Slot(DayOfWeek.MONDAY, MealTime.LUNCH)] = Meal(MainDish("Meal 1"))
         assertFalse(plan.isEmpty())
     }
 
     @Test
     fun overridePreviousMeal_whenAddingMealInSameSlot()
     {
-        val mondayLunch = MealSlot(DayOfWeek.MONDAY, MealTime.LUNCH)
+        val mondayLunch = Slot(DayOfWeek.MONDAY, MealTime.LUNCH)
         plan[mondayLunch] = Meal(MainDish("Meal 1"))
         assertEquals("Meal 1", plan[mondayLunch]?.mainDish?.name)
         plan[mondayLunch] = Meal(MainDish("Meal 2"))
@@ -47,20 +47,20 @@ class MealPlanTest {
     @Test
     fun overridePreviousMeal_whenAddingMealWithAnEqualsSlot()
     {
-        val mondayLunch = MealSlot(DayOfWeek.MONDAY, MealTime.LUNCH)
+        val mondayLunch = Slot(DayOfWeek.MONDAY, MealTime.LUNCH)
         plan[mondayLunch] = Meal(MainDish("Meal 1"))
         assertEquals("Meal 1", plan[mondayLunch]?.mainDish?.name)
-        plan[MealSlot(DayOfWeek.MONDAY, MealTime.LUNCH)] = Meal(MainDish("Meal 2"))
+        plan[Slot(DayOfWeek.MONDAY, MealTime.LUNCH)] = Meal(MainDish("Meal 2"))
         assertEquals("Meal 2", plan[mondayLunch]?.mainDish?.name)
     }
 
     @Test
     fun getListOfMeal_OrderedBySlotDayAndTime()
     {
-        plan[MealSlot(DayOfWeek.MONDAY, MealTime.DINNER)] = Meal(MainDish("Meal 2"))
-        plan[MealSlot(DayOfWeek.THURSDAY, MealTime.DINNER)] = Meal(MainDish("Meal 4"))
-        plan[MealSlot(DayOfWeek.THURSDAY, MealTime.LUNCH)] = Meal(MainDish("Meal 3"))
-        plan[MealSlot(DayOfWeek.MONDAY, MealTime.LUNCH)] = Meal(MainDish("Meal 1"))
+        plan[Slot(DayOfWeek.MONDAY, MealTime.DINNER)] = Meal(MainDish("Meal 2"))
+        plan[Slot(DayOfWeek.THURSDAY, MealTime.DINNER)] = Meal(MainDish("Meal 4"))
+        plan[Slot(DayOfWeek.THURSDAY, MealTime.LUNCH)] = Meal(MainDish("Meal 3"))
+        plan[Slot(DayOfWeek.MONDAY, MealTime.LUNCH)] = Meal(MainDish("Meal 1"))
 
         val meals = plan.getSortedBySlot()
         var key = 0
@@ -74,10 +74,10 @@ class MealPlanTest {
     @Test
     fun getSortedListOfMealOfASpecificDay()
     {
-        plan[MealSlot(DayOfWeek.MONDAY, MealTime.DINNER)] = Meal(MainDish("Meal 2"))
-        plan[MealSlot(DayOfWeek.THURSDAY, MealTime.DINNER)] = Meal(MainDish("Meal 4"))
-        plan[MealSlot(DayOfWeek.THURSDAY, MealTime.LUNCH)] = Meal(MainDish("Meal 3"))
-        plan[MealSlot(DayOfWeek.MONDAY, MealTime.LUNCH)] = Meal(MainDish("Meal 1"))
+        plan[Slot(DayOfWeek.MONDAY, MealTime.DINNER)] = Meal(MainDish("Meal 2"))
+        plan[Slot(DayOfWeek.THURSDAY, MealTime.DINNER)] = Meal(MainDish("Meal 4"))
+        plan[Slot(DayOfWeek.THURSDAY, MealTime.LUNCH)] = Meal(MainDish("Meal 3"))
+        plan[Slot(DayOfWeek.MONDAY, MealTime.LUNCH)] = Meal(MainDish("Meal 1"))
 
         val meals = plan.getByDay(DayOfWeek.THURSDAY)
         var key = 2
@@ -91,7 +91,7 @@ class MealPlanTest {
     @Test
     fun aSlotCanBeEmpty()
     {
-        plan[MealSlot(DayOfWeek.WEDNESDAY, MealTime.LUNCH)] = null
+        plan[Slot(DayOfWeek.WEDNESDAY, MealTime.LUNCH)] = null
     }
 
 }
