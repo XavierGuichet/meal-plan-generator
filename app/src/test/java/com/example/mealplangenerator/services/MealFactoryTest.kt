@@ -17,7 +17,7 @@ class MealFactoryTest {
         override fun getByCriteria(mealCriteria: MealCriteria?): List<MainDish> {
             if (mealCriteria == null)
                 return dishList
-            return dishList.filter { meal -> (meal.mealTime == mealCriteria.mealTime || meal.mealTime == MealTime.ANY) }
+            return dishList.filter { meal -> (meal.mealCriteria.mealTime == mealCriteria.mealTime || meal.mealCriteria.mealTime == MealTime.ANY) }
         }
 
         override fun getStapleDishes(): List<MainDish> {
@@ -81,8 +81,8 @@ class MealFactoryTest {
     fun getRandomMeal_returnOnlyMealRespectingCriteria()
     {
         mainDishRepo.dishList = listOf(
-            MainDish("My Dish 1", MealTime.DINNER),
-            MainDish("My Dish 2", MealTime.LUNCH),
+            MainDish("My Dish 1", emptyList(), MealCriteria(MealTime.DINNER)),
+            MainDish("My Dish 2", emptyList(), MealCriteria(MealTime.LUNCH)),
         )
         class FakeRandom: Random() {
             override fun nextBits(bitCount: Int): Int {

@@ -1,13 +1,11 @@
 package com.example.mealplangenerator.data.model.meal
 
-import com.example.mealplangenerator.enums.Duration
-import com.example.mealplangenerator.enums.MealTime
+import com.example.mealplangenerator.data.model.mealplan.MealCriteria
 
 data class MainDish(
     var name: String,
-    var mealTime: MealTime = MealTime.ANY,
-    var preparationDuration: Duration = Duration.LONG,
-    var maxOccurrenceByWeek: Int = 1,
     var variation: List<String> = emptyList<String>(),
+    var mealCriteria: MealCriteria = MealCriteria(),
+    var maxOccurrenceByWeek: Int = 1,
     var isStaple: Boolean = false
 )

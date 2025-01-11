@@ -13,7 +13,7 @@ open class MainDishesRepository(private val db: AppDatabase): MainDishesReposito
     {
         val dbDishes = db.dishDao()?.getAll()
         dbDishes?.forEach {
-            val mainDish = MainDish(it.name,it.mealTime,it.duration,it.maxOccurrenceByWeek, it.variations.split('|'), it.isStaple)
+            val mainDish = MainDish(it.name, it.variations.split('|'), MealCriteria(it.mealTime,it.duration) ,it.maxOccurrenceByWeek, it.isStaple)
             allDishes.add(mainDish)
         }
         initialized = true
@@ -39,9 +39,9 @@ open class MainDishesRepository(private val db: AppDatabase): MainDishesReposito
     private fun filterDishesByCriteria(validDishes: List<MainDish>, mealCriteria: MealCriteria): MutableList<MainDish> {
         var filteredDishes = validDishes
         if (mealCriteria.mealTime !== MealTime.ANY)
-            filteredDishes = filteredDishes.filter { meal -> (meal.mealTime == mealCriteria.mealTime || meal.mealTime == MealTime.ANY) }
+            filteredDishes = filteredDishes.filter { meal -> (meal.mealCriteria.mealTime == mealCriteria.mealTime || meal.mealCriteria.mealTime == MealTime.ANY) }
 
-        filteredDishes = filteredDishes.filter { meal -> meal.preparationDuration <= mealCriteria.maxPreparationDuration }
+        filteredDishes = filteredDishes.filter { meal -> meal.mealCriteria.maxPreparationDuration <= mealCriteria.maxPreparationDuration }
 
         return filteredDishes.toMutableList()
     }
