@@ -13,9 +13,8 @@ class MealPlanCriteria(mealPlan: MealPlan): HashMap<MealSlot, MealCriteria>() {
     fun setDefaultPrepDurationFor(mealTime: MealTime, duration: Duration)
     {
         this.forEach { (slot, criteria) ->
-            if (slot.mealTime == mealTime) {
-                criteria.setDuration(duration)
-            }
+            if (slot.mealTime == mealTime)
+                criteria.maxPreparationDuration = duration
         }
     }
 
