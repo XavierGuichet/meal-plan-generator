@@ -13,7 +13,8 @@ class Dish(
     @ColumnInfo(name = "duration") val duration: Duration,
     @ColumnInfo(name = "max_occurrence") val maxOccurrenceByWeek: Int = 1,
     @ColumnInfo(name = "variations") val variations: String = "",
-    @ColumnInfo(name = "is_staple") val isStaple: Boolean =  false
+    @ColumnInfo(name = "is_staple") val isStaple: Boolean =  false,
+    @ColumnInfo(name = "is_full_course") val isFullCourse: Boolean =  false
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

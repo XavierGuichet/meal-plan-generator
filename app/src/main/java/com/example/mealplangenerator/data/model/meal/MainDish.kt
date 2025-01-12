@@ -7,5 +7,6 @@ data class MainDish(
     var name: String,
     var variation: List<String> = emptyList<String>(),
     var slotCriteria: Criteria = Criteria(),
-    var planRules: PlanRules = PlanRules()
+    var planRules: PlanRules = PlanRules(),
+    var isFullCourse: Boolean = false
 )

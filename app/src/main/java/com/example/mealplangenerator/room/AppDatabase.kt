@@ -27,16 +27,16 @@ abstract class AppDatabase : RoomDatabase() {
                     dishDao.deleteAll()
 
                     dishDao.insertAll(
-                        Dish("Cordon bleu", MealTime.LUNCH, Duration.QUICK, 2, "", true),
-                        Dish("Pavé de saumon", MealTime.LUNCH, Duration.QUICK, 2, "", true),
-                        Dish("Cotes de porc citron", MealTime.LUNCH, Duration.SHORT),
+                        Dish("Cordon bleu", MealTime.LUNCH, Duration.QUICK, 2, "", true, true),
+                        Dish("Pavé de saumon", MealTime.LUNCH, Duration.QUICK, 2, "", true, true),
+                        Dish("Cotes de porc citron", MealTime.LUNCH, Duration.SHORT, 1, "", false, true),
                         Dish("Salade Caesar", MealTime.ANY, Duration.SHORT),
                         Dish("Dinde cacahuète / petit légumes", MealTime.ANY, Duration.MEDIUM),
                         Dish("Filet de dinde aux 3 poivrons", MealTime.ANY, Duration.MEDIUM),
                         Dish("Bagel saumon citron vert", MealTime.ANY, Duration.MEDIUM),
                         Dish("Nuggets poulet courgette,", MealTime.ANY, Duration.MEDIUM),
                         Dish("Steak dinde aux poivrons", MealTime.ANY, Duration.MEDIUM),
-                        Dish("Croquette de haddock", MealTime.ANY, Duration.MEDIUM),
+                        Dish("Croquette de haddock", MealTime.ANY, Duration.MEDIUM, 1 , "", false, true),
                         Dish("Pates", MealTime.ANY, Duration.QUICK),
                         Dish("Paella", MealTime.ANY, Duration.MEDIUM),
                         Dish("Riz a l'espagnole", MealTime.LUNCH, Duration.SHORT),
