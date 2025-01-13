@@ -14,7 +14,7 @@ open class MainDishesRepository(private val db: AppDatabase): MainDishesReposito
     {
         val dbDishes = db.dishDao()?.getAll()
         dbDishes?.forEach {
-            val mainDish = MainDish(it.name, it.variations.split('|'), Criteria(it.mealTime,it.duration), PlanRules(it.maxOccurrenceByWeek, it.isStaple))
+            val mainDish = MainDish(it.name, it.variations.split('|'), Criteria(it.mealTime,it.duration), PlanRules(it.maxOccurrenceByWeek, it.isStaple), it.isFullCourse)
             allDishes.add(mainDish)
         }
         initialized = true
