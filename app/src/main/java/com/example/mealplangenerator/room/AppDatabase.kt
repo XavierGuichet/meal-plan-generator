@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
-@Database(entities = [MainDish::class], version = 1, exportSchema = false)
+@Database(entities = [MainDish::class, SideDish::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun mainDishDao(): MainDishDao?
 
