@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey
 import com.example.mealplangenerator.enums.Duration
 import com.example.mealplangenerator.enums.MealTime
 
-@Entity(tableName = "dishes")
-class Dish(
+@Entity(tableName = "main_dishes")
+class MainDish(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "meal_time") val mealTime: MealTime,
     @ColumnInfo(name = "duration") val duration: Duration,

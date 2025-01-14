@@ -12,7 +12,7 @@ open class MainDishesRepository(private val db: AppDatabase): MainDishesReposito
 
     private fun initAllDishes()
     {
-        val dbDishes = db.dishDao()?.getAll()
+        val dbDishes = db.mainDishDao()?.getAll()
         dbDishes?.forEach {
             val mainDish = MainDish(it.name, it.variations.split('|'), Criteria(it.mealTime,it.duration), PlanRules(it.maxOccurrenceByWeek, it.isStaple), it.isFullCourse)
             allDishes.add(mainDish)
