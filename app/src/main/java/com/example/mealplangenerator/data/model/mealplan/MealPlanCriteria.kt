@@ -21,7 +21,7 @@ class MealPlanCriteria(mealPlan: MealPlan): HashMap<Slot, Criteria>() {
     }
 
     fun findSlotsWithCriteria(requestCriteria: Criteria): Set<Slot> {
-        val res = this.filter { (slot, mealCriteria) ->
+        val res = this.filter { (_, mealCriteria) ->
             (requestCriteria.mealTime == MealTime.ANY || requestCriteria.mealTime == mealCriteria.mealTime)
         }
         return res.keys

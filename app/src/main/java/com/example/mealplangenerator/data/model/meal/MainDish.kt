@@ -5,7 +5,7 @@ import com.example.mealplangenerator.data.model.mealplan.PlanRules
 
 data class MainDish(
     var name: String,
-    var variation: List<String> = emptyList<String>(),
+    var variation: List<String> = emptyList(),
     var slotCriteria: Criteria = Criteria(),
     var planRules: PlanRules = PlanRules(),
     var isFullCourse: Boolean = false

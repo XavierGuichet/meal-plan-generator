@@ -12,11 +12,11 @@ open class MealPlan : HashMap<Slot, Meal?>() {
     }
 
     fun getByDay(dayOfWeek: DayOfWeek): HashMap<MealTime, Meal?> {
-        val sortedByTimeOfDayOfWeek =  this.filterKeys { it.dayOfWeek == dayOfWeek }.toSortedMap(compareBy<Slot>{ it.mealTime })
+        val sortedByTimeOfDayOfWeek =  this.filterKeys { it.dayOfWeek == dayOfWeek }.toSortedMap(compareBy { it.mealTime })
         return sortedByTimeOfDayOfWeek.map { (slot, value) -> slot.mealTime to value }.toMap(HashMap<MealTime, Meal?>())
     }
 
     fun getSortedDays(): List<DayOfWeek> {
-        return this.getSortedBySlot().map { (key, meal) -> key.dayOfWeek }.distinct()
+        return this.getSortedBySlot().map { (key) -> key.dayOfWeek }.distinct()
     }
 }

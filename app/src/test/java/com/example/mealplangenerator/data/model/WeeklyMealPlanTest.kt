@@ -17,14 +17,15 @@ class WeeklyMealPlanTest {
     {
         wmp = WeeklyMealPlan()
     }
+
     @Test
-    fun WeeklyMealPlan_Is_MealPlan()
+    fun weeklyMealPlan_Is_MealPlan()
     {
         assertTrue(wmp is MealPlan)
     }
 
     @Test
-    fun WeeklyMealPlan_has_7_days_and_2_meal_per_day()
+    fun weeklyMealPlan_has_7_days_and_2_meal_per_day()
     {
         assertEquals(14,wmp.size)
         assertTrue(wmp.containsKey(Slot(DayOfWeek.MONDAY, MealTime.LUNCH)))
